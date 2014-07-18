@@ -109,7 +109,7 @@ void computeAStar_thread_function()
             ROS_INFO("computeAStar with : Start - x %d | y %d  /  End - x %d | y %d",startPoint->getX(),startPoint->getY(),endPoint->getX(),endPoint->getY());
 
             pathFound.id = actualOrders.id;
-            pathFound.path.erase(pathFound.path.begin(),pathFound.path.end());
+            pathFound.path.poses.erase(pathFound.path.poses.begin(),pathFound.path.poses.end());
             mapRobocup.computeAStar(chemin, startPoint, endPoint);
 
             pathfinderState.id = actualOrders.id;
@@ -121,13 +121,13 @@ void computeAStar_thread_function()
                     geometry_msgs::Pose point;
                     point.position.x = chemin[i]->getX();
                     point.position.y = chemin[i]->getY();
-                    pathFound.path.push_back(point);
+                    pathFound.path.poses.push_back(point);
                 }
-                geometry_msgs::Pose pointFinal;
-                pointFinal.position.x = chemin[i]->getX();
-                pointFinal.position.y = chemin[i]->getY();
-                pointFinal.orientation = tf::createQuaternionMsgFromYaw(actualOrders.goalPose.yaw);
-                pathFound.path.push_back(pointFinal);
+                geometry_msgs::PoseStamped pointFinal;
+                pointFinal.pose.position.x = chemin[i]->getX();
+                pointFinal.pose.position.y = chemin[i]->getY();
+                pointFinal.pose.orientation = tf::createQuaternionMsgFromYaw(actualOrders.goalPose.yaw);
+                pathFound.path.poses.push_back(pointFinal);
 
                 pathfinderState.state = pathfinderState.SUCCES;
             }
