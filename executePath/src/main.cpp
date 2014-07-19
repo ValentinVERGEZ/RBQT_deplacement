@@ -3,15 +3,20 @@
 #include "executePath/ExecuteurDeChemin.h"
 
 /*==========  Global Variables  ==========*/
+	// Paths
+	std::list<rbqt_pathfinder::AstarPath> listOfPath;
+	rbqt_pathfinder::AstarPath pathToFollow;
 
-std::list<rbqt_pathfinder::AstarPath> listOfPath;
-rbqt_pathfinder::AstarPath pathToFollow;
-executePath::EdCState EdCState_msg;
+	// Message
+	executePath::EdCState EdCState_msg;
 
 	// Odométrie
 	float current_x		= 0.0;
 	float current_y		= 0.0;
 	float current_phi = 0.0;
+
+	// Infos
+	uint8_t	lastState = executePath::EdCState::LIBRE;
 
 /*============================
 =            Main            =
@@ -38,6 +43,7 @@ int main(int argc, char** argv)
 
 	//Init message
 	EdCState_msg.state = executePath::EdCState::LIBRE;
+	EdCState_msg.ID = -1;
 
 	ros::Rate loop_rate ( 30 );
 	while(n.ok())
@@ -82,11 +88,88 @@ void pathfinderCallback(const rbqt_pathfinder::AstarPath pathFound)
 bool serviceCallback(executePath::command::Request  &req,
         executePath::command::Response &res)
 {
-	// Type
-// 	uint8 EXECUTE_PATH = 0
-// uint8 PAUSE	= 1
-// uint8 RESUME = 2
-// uint8 CANCEL = 3
+	switch(req.type)
+	{
+		case executePath::command::Request::EXECUTE_PATH :
+			int ID;
+			ID = req.ID;
+
+			// On execute un nouveau chemin que si on est libre (LIBRE, FINISHED et BAD_ID)
+			if(EdCState_msg.state == executePath::EdCState::LIBRE
+				|| EdCState_msg.state == executePath::EdCState::BAD_ID
+				|| EdCState_msg.state == executePath::EdCState::FINISHED)
+			{
+				if(findPath(pathToFollow, listOfPath, ID))
+				{
+					res.accepted = true;
+					lastState = EdCState_msg.state;
+					EdCState_msg.state = executePath::EdCState::IN_PROGRESS;
+					EdCState_msg.ID = ID;
+				}
+				else
+				{
+					res.accepted = false;
+					lastState = EdCState_msg.state;
+					EdCState_msg.state = executePath::EdCState::BAD_ID;											
+				}
+			}
+			else
+			{
+				res.accepted = false;
+			}
+			break;
+
+		case executePath::command::Request::PAUSE :
+			// On met PAUSE que quand un chemin s'execute (PROBLEM, OBSTACLE, IN_PROGRESS)
+			if(EdCState_msg.state == executePath::EdCState::IN_PROGRESS
+				|| EdCState_msg.state == executePath::EdCState::OBSTACLE
+				|| EdCState_msg.state == executePath::EdCState::PROBLEM)
+			{
+				res.accepted = true;
+				lastState = EdCState_msg.state;
+				EdCState_msg.state = executePath::EdCState::PAUSED;		
+			}
+			else
+			{
+				res.accepted = false;
+			}
+			break;
+
+		case executePath::command::Request::RESUME :
+			// On RESUME uniquement quand on est en pause
+			if(EdCState_msg.state == executePath::EdCState::PAUSED)
+			{
+				res.accepted = true;
+				EdCState_msg.state = lastState;	
+				lastState = executePath::EdCState::PAUSED;
+			}
+			else
+			{
+				res.accepted = false;
+			}
+			break;
+
+		case executePath::command::Request::CANCEL :
+			// On annulle que quand un chemin s'execute ou est en pause (PROBLEM, OBSTACLE, IN_PROGRESS, PAUSED)
+			if(EdCState_msg.state == executePath::EdCState::IN_PROGRESS
+				|| EdCState_msg.state == executePath::EdCState::OBSTACLE
+				|| EdCState_msg.state == executePath::EdCState::PROBLEM
+				|| EdCState_msg.state == executePath::EdCState::PAUSED)
+			{
+				res.accepted = true;
+				lastState = EdCState_msg.state;
+				EdCState_msg.state = executePath::EdCState::LIBRE;		
+			}
+			else
+			{
+				res.accepted = false;
+			}
+			break;
+
+		default:
+			res.accepted = false;
+			break;
+	}
 
 	int ID;
 	ID = req.ID;

@@ -4,6 +4,6 @@ uint8 RESUME = 2
 uint8 CANCEL = 3
 
 uint8 type
-uint8 ID	
+uint16 ID	
 ---			
 bool accepted
