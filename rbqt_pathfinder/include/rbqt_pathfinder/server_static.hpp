@@ -1,5 +1,5 @@
-#ifndef _SERVER_HEADER_
-#define _SERVER_HEADER_
+#ifndef _SERVER_STATIC_HEADER_
+#define _SERVER_STATIC_HEADER_
 
 /*==========  Includes  ==========*/
 //StdLib
@@ -49,4 +49,4 @@ bool generatePath_callback(rbqt_pathfinder::GeneratePath::Request  &req,
          rbqt_pathfinder::GeneratePath::Response &res);
 void computeAStar_thread_function();
 
-#endif // _SERVER_HEADER_
+#endif // _SERVER_STATIC_HEADER_

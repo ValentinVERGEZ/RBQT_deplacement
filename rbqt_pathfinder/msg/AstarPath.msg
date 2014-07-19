@@ -1,2 +1,2 @@
 int16  id
-geometry_msgs/Pose[]    path
+nav_msgs/Path    path
