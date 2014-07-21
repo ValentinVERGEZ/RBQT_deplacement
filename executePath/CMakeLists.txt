@@ -29,13 +29,12 @@ rosbuild_gensrv()
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
 
+#include_directories(/home/thomas/Documents/Robocup2014/robotino-ros-pkg/robotino/robotino_local_move/include ${roscpp_INCLUDE_DIRS})
+
 rosbuild_add_boost_directories()
-
-#rosbuild_add_executable(server  src/server.cpp src/Map.cpp src/Point.cpp src/Objet.cpp)
-
-rosbuild_add_executable(server_static  	src/server_static.cpp
-                                		src/server_static_utils.cpp)
-
-#rosbuild_link_boost(server thread)
-
-rosbuild_link_boost(server_static thread)
+rosbuild_add_executable(
+  executePath 
+  src/ExecuteurDeChemin.cpp
+  src/main.cpp
+)
+rosbuild_link_boost(executePath thread)

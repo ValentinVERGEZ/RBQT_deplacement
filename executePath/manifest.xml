@@ -1,0 +1,25 @@
+<package>
+
+  <description brief="executePath">
+
+     executePath
+
+  </description>
+  
+  <author>tdanel</author>
+  <license>BSD</license>
+  
+  <review status="unreviewed"/>
+
+  <depend package="geometry_msgs"/>
+  <depend package="nav_msgs"/>
+  <depend package="rospy"/>
+  <depend package="roscpp"/>
+  <depend package="tf"/>
+  <!-- <depend package="robotino_local_move"/> -->
+  <!-- <depend package="robotino_msgs"/> -->
+  <depend package="rbqt_pathfinder"/>
+  
+</package>
+
+

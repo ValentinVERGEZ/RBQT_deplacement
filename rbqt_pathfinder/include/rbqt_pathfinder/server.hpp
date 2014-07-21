@@ -22,6 +22,7 @@
 
     #include "ros/ros.h"
     #include "tf/transform_datatypes.h"
+    #include "nav_msgs/Path.h"
 
     #include <boost/thread/thread.hpp>
 

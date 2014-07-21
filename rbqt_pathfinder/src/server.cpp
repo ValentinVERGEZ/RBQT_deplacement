@@ -118,9 +118,9 @@ void computeAStar_thread_function()
                 std::size_t i;
 
                 for(i=0;i<chemin.size()-1;++i) {
-                    geometry_msgs::Pose point;
-                    point.position.x = chemin[i]->getX();
-                    point.position.y = chemin[i]->getY();
+                    geometry_msgs::PoseStamped point;
+                    point.pose.position.x = chemin[i]->getX();
+                    point.pose.position.y = chemin[i]->getY();
                     pathFound.path.poses.push_back(point);
                 }
                 geometry_msgs::PoseStamped pointFinal;

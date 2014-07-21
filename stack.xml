@@ -1,0 +1,13 @@
+<stack>
+  <description brief="rbqt_deplacement">
+
+     RBQT Stack pour gestion du déplacement
+
+  </description>
+  <author>valentin.vergez@polytech-lille.net</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+
+  <depend stack="" />
+
+</stack>
