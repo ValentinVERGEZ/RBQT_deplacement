@@ -9,7 +9,7 @@ std::vector<GridPath> StaticTab;
 
 int main(int argc, char **argv)
 {
-    defineOrigin(origin, 0.0, 1.0);
+    defineOrigin(origin, 0.0, 0.33);
 
     initGridPath(StaticTab);
     initAstarPath(AstarTab, StaticTab);
