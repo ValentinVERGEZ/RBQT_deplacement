@@ -17,9 +17,11 @@
 #include "rbqt_pathfinder/AstarState.h"
 
 #include <boost/thread/thread.hpp>
+#include <cmath>
 #include <vector>
 
 #define OFFSET_GRID 0.56 
+#define POSE_TOLERANCE  0.20
 
 typedef struct{
     int id;
@@ -67,6 +69,9 @@ geometry_msgs::PoseStamped calculPoint (int xgrille,
                                         int ygrille,
                                         geometry_msgs::PoseStamped origin,
                                         float OffsetGrid);
+
+void affichageTabPath(std::vector<rbqt_pathfinder::AstarPath> &AstarTab);
+void affichePath(rbqt_pathfinder::AstarPath &AStar);
 
 void inverserChemin(GridPath &Chemin);
 
