@@ -27,10 +27,10 @@ public:
 	void setAllowDiagonal(bool allowDiagonal);
 	void setCrossCorner(bool crossCorner);
 	void setPoidsHeuristic(signed int poids);
-	signed int heuristic(Point const& pointDepart, Point const& pointDistant);
-	signed int heuristicManhattan(Point const& pointDepart, Point const& pointDistant);
-	signed int heuristicEuclidean(Point const& pointDepart, Point const& pointDistant);
-	signed int heuristicChebyshev(Point const& pointDepart, Point const& pointDistant);
+	float heuristic(Point const& pointDepart, Point const& pointDistant);
+	float heuristicManhattan(Point const& pointDepart, Point const& pointDistant);
+	float heuristicEuclidean(Point const& pointDepart, Point const& pointDistant);
+	float heuristicChebyshev(Point const& pointDepart, Point const& pointDistant);
 	void setHeuristicFunction(typeHeuristic heuristicFonction);
 	bool isFreeAt(signed int li, signed int col);
 	signed int getVoisins(std::vector<Point*> &voisins, Point *oirigin);

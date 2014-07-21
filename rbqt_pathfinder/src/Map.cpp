@@ -5,40 +5,40 @@
 		std::cout << "Objet Map, instanciation" << std::endl;		
 		std::cout << "Machines ..." << std::endl;
 		// Création des machines 
-		_production_machine[0] = new Objet(MACHINE,56,168,-90);
-		_production_machine[1] = new Objet(MACHINE,56,280,90);
-		_production_machine[2] = new Objet(MACHINE,168,168,180);
-		_production_machine[3] = new Objet(MACHINE,168,280,0);
-		_production_machine[4] = new Objet(MACHINE,168,392,0);
-		_production_machine[5] = new Objet(MACHINE,280,168,90);
-		_production_machine[6] = new Objet(MACHINE,280,392,-90);
-		_production_machine[7] = new Objet(MACHINE,280,504,180);
-		_production_machine[8] = new Objet(MACHINE,392,168,0);
-		_production_machine[9] = new Objet(MACHINE,392,280,90);
-		_production_machine[10] = new Objet(MACHINE,392,504,-90);
-		_production_machine[11] = new Objet(MACHINE,504,504,-90);
-		_production_machine[12] = new Objet(MACHINE,-56,168,-90);
-		_production_machine[13] = new Objet(MACHINE,-56,280,90);
-		_production_machine[14] = new Objet(MACHINE,-168,168,180);
-		_production_machine[15] = new Objet(MACHINE,-168,280,0);
-		_production_machine[16] = new Objet(MACHINE,-168,392,0);
-		_production_machine[17] = new Objet(MACHINE,-280,168,90);
-		_production_machine[18] = new Objet(MACHINE,-280,392,-90);
-		_production_machine[19] = new Objet(MACHINE,-280,504,180);
-		_production_machine[20] = new Objet(MACHINE,-392,168,0);
-		_production_machine[21] = new Objet(MACHINE,-392,280,90);
-		_production_machine[22] = new Objet(MACHINE,-392,504,-90);
-		_production_machine[23] = new Objet(MACHINE,-504,504,-90);
+		_production_machine[0] = new Objet(MACHINE,(float)56/100,(float)168/100,-90);
+		_production_machine[1] = new Objet(MACHINE,(float)56/100,(float)280/100,90);
+		_production_machine[2] = new Objet(MACHINE,(float)168/100,(float)168/100,180);
+		_production_machine[3] = new Objet(MACHINE,(float)168/100,(float)280/100,0);
+		_production_machine[4] = new Objet(MACHINE,(float)168/100,(float)392/100,0);
+		_production_machine[5] = new Objet(MACHINE,(float)280/100,(float)168/100,90);
+		_production_machine[6] = new Objet(MACHINE,(float)280/100,(float)392/100,-90);
+		_production_machine[7] = new Objet(MACHINE,(float)280/100,(float)504/100,180);
+		_production_machine[8] = new Objet(MACHINE,(float)392/100,(float)168/100,0);
+		_production_machine[9] = new Objet(MACHINE,(float)392/100,(float)280/100,90);
+		_production_machine[10] = new Objet(MACHINE,(float)392/100,(float)504/100,-90);
+		_production_machine[11] = new Objet(MACHINE,(float)504/100,(float)504/100,-90);
+		_production_machine[12] = new Objet(MACHINE,(float)-56/100,(float)168/100,-90);
+		_production_machine[13] = new Objet(MACHINE,(float)-56/100,(float)280/100,90);
+		_production_machine[14] = new Objet(MACHINE,(float)-168/100,(float)168/100,180);
+		_production_machine[15] = new Objet(MACHINE,(float)-168/100,(float)280/100,0);
+		_production_machine[16] = new Objet(MACHINE,(float)-168/100,(float)392/100,0);
+		_production_machine[17] = new Objet(MACHINE,(float)-280/100,(float)168/100,90);
+		_production_machine[18] = new Objet(MACHINE,(float)-280/100,(float)392/100,-90);
+		_production_machine[19] = new Objet(MACHINE,(float)-280/100,(float)504/100,180);
+		_production_machine[20] = new Objet(MACHINE,(float)-392/100,(float)168/100,0);
+		_production_machine[21] = new Objet(MACHINE,(float)-392/100,(float)280/100,90);
+		_production_machine[22] = new Objet(MACHINE,(float)-392/100,(float)504/100,-90);
+		_production_machine[23] = new Objet(MACHINE,(float)-504/100,(float)504/100,-90);
 
-		_delivery_machine[0] = new Objet(DELIVERY,534,245,180);
-		_delivery_machine[1] = new Objet(DELIVERY,534,280,180);
-		_delivery_machine[2] = new Objet(DELIVERY,534,315,180);
-		_delivery_machine[3] = new Objet(DELIVERY,-534,245,0);
-		_delivery_machine[4] = new Objet(DELIVERY,-534,280,0);
-		_delivery_machine[5] = new Objet(DELIVERY,-534,315,0);
+		_delivery_machine[0] = new Objet(DELIVERY,(float)534/100,(float)245/100,180);
+		_delivery_machine[1] = new Objet(DELIVERY,(float)534/100,(float)280/100,180);
+		_delivery_machine[2] = new Objet(DELIVERY,(float)534/100,(float)315/100,180);
+		_delivery_machine[3] = new Objet(DELIVERY,(float)-534/100,(float)245/100,0);
+		_delivery_machine[4] = new Objet(DELIVERY,(float)-534/100,(float)280/100,0);
+		_delivery_machine[5] = new Objet(DELIVERY,(float)-534/100,(float)315/100,0);
 
-		_recycling_machine[0] = new Objet(RECYCLING,56,504,0);
-		_recycling_machine[1] = new Objet(RECYCLING,-56,504,180);
+		_recycling_machine[0] = new Objet(RECYCLING,(float)56/100,(float)504/100,0);
+		_recycling_machine[1] = new Objet(RECYCLING,(float)-56/100,(float)504/100,180);
 		std::cout << "DONE" << std::endl;
 
 
@@ -49,7 +49,7 @@
 			for (int j = 0; j < nbPointsColonnes; ++j)
 			{
 				std::cout << "Point x : " << i << " y : " << j << std::endl;
-				_pointsPassage[i][j] = new Point(-504+j*56,56+i*56,i,j);
+				_pointsPassage[i][j] = new Point(-5.04+j*0.56,0.56+i*0.56,i,j);
 			}
 		}				
 		_pointsPassage[2][2]->setType(INTERDIT);
@@ -111,7 +111,7 @@
 		_poidsHeuristic = poids;
 	}
 
-	signed int Map::heuristic(Point const& pointDepart, Point const& pointDistant)
+	float Map::heuristic(Point const& pointDepart, Point const& pointDistant)
 	{
 		switch(_heuristicFonction)
 		{
@@ -129,10 +129,10 @@
 		}
 	}
 
-	signed int Map::heuristicManhattan(Point const& pointDepart, Point const& pointDistant)
+	float Map::heuristicManhattan(Point const& pointDepart, Point const& pointDistant)
 	{
-		signed int dist = 0;
-		signed int distX = 0, distY = 0;
+		float dist = 0;
+		float distX = 0, distY = 0;
 
 		distX = std::abs(pointDistant.getX() - pointDepart.getX());
 		distY = std::abs(pointDistant.getY() - pointDepart.getY());
@@ -142,10 +142,10 @@
 		return dist;
 	}
 
-	signed int Map::heuristicEuclidean(Point const& pointDepart, Point const& pointDistant)
+	float Map::heuristicEuclidean(Point const& pointDepart, Point const& pointDistant)
 	{
-		signed int dist = 0;
-		signed int distX = 0, distY = 0;
+		float dist = 0;
+		float distX = 0, distY = 0;
 
 		distX = std::abs(pointDistant.getX() - pointDepart.getX());
 		distY = std::abs(pointDistant.getY() - pointDepart.getY());
@@ -155,10 +155,10 @@
 		return dist;
 	}
 
-	signed int Map::heuristicChebyshev(Point const& pointDepart, Point const& pointDistant)
+	float Map::heuristicChebyshev(Point const& pointDepart, Point const& pointDistant)
 	{
-		signed int dist = 0;
-		signed int distX = 0, distY = 0;
+		float dist = 0;
+		float distX = 0, distY = 0;
 
 		distX = std::abs(pointDistant.getX() - pointDepart.getX());
 		distY = std::abs(pointDistant.getY() - pointDepart.getY());
@@ -407,7 +407,7 @@
 	}
 
 
-	signed int Map::getNearestPoint(int x, int y, Point*& point) const
+	signed int Map::getNearestPoint(float x, float y, Point*& point) const
 	{
 		if(nbPointsLignes == 0 || nbPointsColonnes == 0)
 			return -1;

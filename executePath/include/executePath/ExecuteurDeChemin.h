@@ -13,6 +13,7 @@
 
 // #include <actionlib/client/simple_action_client.h>
 #include <tf/transform_datatypes.h>
+#include <std_msgs/Bool.h>
 #include <nav_msgs/Path.h>
 #include <nav_msgs/Odometry.h>
 #include <cmath>
@@ -29,9 +30,14 @@
 #define NB_MAX_PATH_SAVED 10
 #define  sucess actionlib::SimpleClientGoalState::SUCCEEDED
 
+/*==========  Types  ==========*/
+
+typedef executePath::command::Request Request;
+
 /*==========  DECLARATIONS - main.cpp  ==========*/
 
 void odomCallback(nav_msgs::Odometry odom);
+void bumperCallback(std_msgs::Bool bumper);
 void pathfinderCallback(const rbqt_pathfinder::AstarPath pathFound);
 bool serviceCallback(executePath::command::Request &req, executePath::command::Response &res);// Called once when the goal completes
 void doneCb(const actionlib_msgs::GoalStatus& state,
