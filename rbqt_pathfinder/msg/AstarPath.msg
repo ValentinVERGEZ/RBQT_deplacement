@@ -1,2 +1,2 @@
-int16  id
-nav_msgs/Path[]    path
+int16 id
+nav_msgs/Path path
