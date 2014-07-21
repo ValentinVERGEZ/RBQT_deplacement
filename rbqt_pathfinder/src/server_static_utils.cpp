@@ -1,8 +1,8 @@
 #include "rbqt_pathfinder/server_static_utils.h"
 
-geometry_msgs::PoseStamped &origin;
+geometry_msgs::PoseStamped origin;
 
-std::vector<rbqt_pathfinder::AstarPath> &AstarTab;
+std::vector<rbqt_pathfinder::AstarPath> AstarTab;
 
 void defineOrigin(geometry_msgs::PoseStamped &origin, float xorigin, float yorigin)
 {
@@ -250,7 +250,7 @@ void computeAStar_thread_function()
 
             pathfinderState.id = actualOrders.id;
 
-            if (pathFound.path.poses.size() <= 0)
+            if (pathFound.path.poses.size() > 0)
             {
                 pathfinderState.state = pathfinderState.SUCCES;
             }

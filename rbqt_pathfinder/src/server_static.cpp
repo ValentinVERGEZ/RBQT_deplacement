@@ -5,7 +5,7 @@ rbqt_pathfinder::AstarPath  pathFound;
 rbqt_pathfinder::AstarState pathfinderState;
 int lastIdReceived = -1;
 
-std::vector<GridPath> &StaticTab;
+std::vector<GridPath> StaticTab;
 
 int main(int argc, char **argv)
 {

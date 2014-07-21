@@ -53,13 +53,13 @@ typedef std::vector<GridPoint> GridPath;
 
 typedef std::vector<GridPath> tabGridPath;
 
-extern geometry_msgs::PoseStamped &origin;
-extern std::vector<rbqt_pathfinder::AstarPath> &AstarTab;
+extern geometry_msgs::PoseStamped origin;
+extern std::vector<rbqt_pathfinder::AstarPath> AstarTab;
 extern PathOrders pathReq;
 extern rbqt_pathfinder::AstarPath  pathFound;
 extern rbqt_pathfinder::AstarState pathfinderState;
 extern int lastIdReceived;
-extern std::vector<GridPath> &StaticTab;
+extern std::vector<GridPath> StaticTab;
 
 void defineOrigin(geometry_msgs::PoseStamped &origin, float xorigin, float yorigin);
 
