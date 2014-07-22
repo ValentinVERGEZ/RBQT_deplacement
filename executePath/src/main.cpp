@@ -13,19 +13,19 @@
 	// Odométrie
 	float current_x		= 0.0;
 	float current_y		= 0.0;
-	float current_phi = 0.0;
+	float current_phi 	= 0.0;
 
 	// Bumper
-	bool bumperState = false;
+	bool bumperState 	= false;
 
 	// Infos
-	uint8_t	lastState = executePath::EdCState::LIBRE;
+	uint8_t	lastState 	= executePath::EdCState::LIBRE;
 
 	// Service
 	Request servReq;
-	unsigned int actualProcessedPose = 0;
-	bool firstRotationAlreadyDone = false;
-	bool goalAlreadySent = false;
+	unsigned int actualProcessedPose 	= 0;
+	bool firstRotationAlreadyDone 		= false;
+	bool goalAlreadySent 				= false;
 
 /*============================
 =            Main            =
@@ -41,21 +41,21 @@ int main(int argc, char** argv)
 	ros::NodeHandle n;
 	
 	//Souscription aux topics utiles
-	ros::Subscriber sub_odo = n.subscribe("/odom", 1000, odomCallback);
-	ros::Subscriber sub_bump = n.subscribe("/bumper", 1000, bumperCallback);
-	ros::Subscriber sub_pathFound = n.subscribe("/pathFound", 1000, pathfinderCallback);
+	ros::Subscriber sub_odo 		= n.subscribe("/odom", 1000, odomCallback);
+	ros::Subscriber sub_bump 		= n.subscribe("/bumper", 1000, bumperCallback);
+	ros::Subscriber sub_pathFound 	= n.subscribe("/pathFound", 1000, pathfinderCallback);
 	
 	//Création d'un topic d'état EdCState
 	ros::Publisher EdCState_pub = n.advertise<executePath::EdCState>("EdCState", 1000);
 	
 	//Création d'un service "command"
-	servReq.type = Request::NOTHING;
-	servReq.ID = -1;
-	ros::ServiceServer service = n.advertiseService("command", &serviceCallback);
+	servReq.type 				= Request::NOTHING;
+	servReq.ID 					= -1;
+	ros::ServiceServer service 	= n.advertiseService("command", &serviceCallback);
 
 	//Init message
-	EdCState_msg.state = executePath::EdCState::LIBRE;
-	EdCState_msg.ID = -1;
+	EdCState_msg.state 	= executePath::EdCState::LIBRE;
+	EdCState_msg.ID 	= -1;
 
 	// Thread
 	boost::thread executePath(&executePath_thread);
@@ -307,12 +307,15 @@ void executePath_thread()
 								current_y,
 								pathToFollow.path.poses[actualProcessedPose].pose.position.x,
 								pathToFollow.path.poses[actualProcessedPose].pose.position.y);
+						
 						actualGoal.move_y 	= 0.0;
+
 						actualGoal.rotation =
 							tf::getYaw(
 								pathToFollow.path.poses[actualProcessedPose].pose.orientation) - current_phi;
 
-						actualGoal.ignore_rotation = false;	
+						actualGoal.ignore_rotation = false;
+
 						ROS_INFO("Construct new goal -
 							(Last Point) Avance %f - Rotation %f",
 							actualGoal.move_x,
@@ -324,11 +327,16 @@ void executePath_thread()
 						actualGoal.move_x = 0.0;
 						actualGoal.move_y = 0.0;
 
-						actualGoal.rotation = calculateRotationNeeded(current_x, current_y, pathToFollow.path.poses[actualProcessedPose].pose.position.x,pathToFollow.path.poses[actualProcessedPose].pose.position.y) - current_phi;
+						actualGoal.rotation =
+							calculateRotationNeeded(
+								current_x,
+								current_y,
+								pathToFollow.path.poses[actualProcessedPose].pose.position.x,
+								pathToFollow.path.poses[actualProcessedPose].pose.position.y) - current_phi;
 
 						actualGoal.ignore_rotation = false;
-						ROS_INFO("Construct new goal -
-							(Last Point) First Rotation %f",
+
+						ROS_INFO("Construct new goal - (Last Point) First Rotation %f",
 							actualGoal.rotation);
 					}
 				}
@@ -338,11 +346,18 @@ void executePath_thread()
 					// Avance
 					if(firstRotationAlreadyDone)
 					{		
-						actualGoal.move_x 	= calculateForwardDisplacementNeeded(current_x, current_y, pathToFollow.path.poses[actualProcessedPose].pose.position.x,pathToFollow.path.poses[actualProcessedPose].pose.position.y);
+						actualGoal.move_x 	=
+							calculateForwardDisplacementNeeded(
+								current_x,
+								current_y,
+								pathToFollow.path.poses[actualProcessedPose].pose.position.x,
+								pathToFollow.path.poses[actualProcessedPose].pose.position.y);
+
 						actualGoal.move_y 	= 0.0;
 						actualGoal.rotation = 0.0;
 
 						actualGoal.ignore_rotation = true;	
+
 						ROS_INFO("Construct new goal - Avance %f",
 								  actualGoal.move_x);
 					}
@@ -352,12 +367,17 @@ void executePath_thread()
 						actualGoal.move_x = 0.0;
 						actualGoal.move_y = 0.0;
 
-						actualGoal.rotation = calculateRotationNeeded(current_x, current_y, pathToFollow.path.poses[actualProcessedPose].pose.position.x,pathToFollow.path.poses[actualProcessedPose].pose.position.y) - current_phi;
+						actualGoal.rotation =
+							calculateRotationNeeded(
+								current_x,
+								current_y,
+								pathToFollow.path.poses[actualProcessedPose].pose.position.x,
+								pathToFollow.path.poses[actualProcessedPose].pose.position.y) - current_phi;
 
 						actualGoal.ignore_rotation = false;
-						ROS_INFO("Construct new goal -
-							First Rotation %f",
-							actualGoal.rotation);
+
+						ROS_INFO("Construct new goal - First Rotation %f",
+								  actualGoal.rotation);
 					}
 				}
 
@@ -369,7 +389,7 @@ void executePath_thread()
 						  pathToFollow.path.poses[actualProcessedPose].pose.position.y);
 
 				ROS_INFO("Odometry phi:%5.2f --
-						  Goal phi:%5.2f\n_____________________",
+						  Goal phi:%5.2f\n",
 						  current_phi,
 						  actualGoal.rotation + current_phi);
 
@@ -403,18 +423,6 @@ float calculateRotationNeeded(float startX, float startY, float endX, float endY
 
 	float phi = atan2(dy,dx);
 
-	// if(dx >= 0)
-	// {
-	// 	if(dy < 0)
-	// 		phi *= -1;
-	// }
-	// else
-	// {
-	// 	if(dy < 0)
-	// 		phi = -M_PI + phi;
-	// 	else
-	// 		phi = M_PI - phi;
-	// }
 	return phi;
 }
 
