@@ -83,9 +83,9 @@ int main(int argc, char** argv)
 
 void odomCallback(nav_msgs::Odometry odom)
 {
-	current_x		= (odom).pose.pose.position.x;
-	current_y		= (odom).pose.pose.position.x;
-	current_phi		= tf::getYaw((odom).pose.pose.orientation);
+	current_x		= odom.pose.pose.position.x;
+	current_y		= odom.pose.pose.position.y;
+	current_phi		= tf::getYaw(odom.pose.pose.orientation);
 	
 	//ROS_INFO("I am at this point: [%f, %f] with the angle %f rad (%f deg)", current_x, current_y, current_phi, current_phi*180/PI);
 }
@@ -223,12 +223,13 @@ void doneCb(const actionlib::SimpleClientGoalState& state,
 	}
 	else
 	{
-		if(actualProcessedPose == pathToFollow.path.poses.size())
+		if(actualProcessedPose == pathToFollow.path.poses.size()-1)
 		{
 			actualProcessedPose 		= 0;
 			servReq.type 				= Request::NOTHING;
 			firstRotationAlreadyDone 	= false;
 			goalAlreadySent 			= false;
+			EdCState_msg.state   = executePath::EdCState::FINISHED;
 		}
 		else
 		{
@@ -389,9 +390,12 @@ float calculateRotationNeeded(float startX, float startY, float endX, float endY
 
 float calculateForwardDisplacementNeeded(float startX, float startY, float endX, float endY)
 {
-	float dy = abs(startY - endY);
-	float dx = abs(startX - endX);
+	float dy = fabs(startY - endY);
+	float dx = fabs(startX - endX);
 
+    ROS_INFO("(%f, %f) - (%f, %f)", startX, startY, endX, endY);
+    ROS_INFO("dx : %f , dy : %f, d : %f" , dx, dy, sqrt(dx*dx+dy*dy));
+    
 	return sqrt(dx*dx+dy*dy) ;
 }
 
