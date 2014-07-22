@@ -126,7 +126,7 @@ void computeAStar_thread_function()
                 pathReq.startPose.y,
                 startPoint);
 
-            //ROS_INFO("computeAStar with : Start - x %f | y %f  /  End - x %f | y %f",startPoint->getX(),startPoint->getY(),endPoint->getX(),endPoint->getY());
+            ROS_INFO("computeAStar with : Start - x %f | y %f  /  End - x %f | y %f",startPoint->getX(),startPoint->getY(),endPoint->getX(),endPoint->getY());
 
             pathFound.id = actualOrders.id;
             pathFound.path.poses.erase(
@@ -156,7 +156,8 @@ void computeAStar_thread_function()
 
                 ROS_INFO("enter in if condition");
 
-                for(i=0;i<chemin.size()-1;++i) {
+                for(i=0;i<chemin.size()-1;++i)
+                {
                     geometry_msgs::PoseStamped point;
                     point.pose.position.x = chemin[i]->getX();
                     point.pose.position.y = chemin[i]->getY();

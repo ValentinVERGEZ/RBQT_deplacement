@@ -271,6 +271,12 @@
 								 Point *startPoint,
 								 Point *endPoint)
 	{
+		std::cout << "computeAStar : start("
+		<< startPoint->getLigne() << ','
+		<< startPoint->getColonne() << ") | end("
+		<< endPoint->getLigne() << ','
+		<< endPoint->getColonne() << ")" << std::endl;
+
 
 //Création des points
 		#ifdef GRAPHIC
@@ -301,6 +307,30 @@
 			p->_shape->setFillColor(sf::Color::Blue);
 			#endif
 
+			//ROS_INFO("\nA Evaluer Contains :");
+			//Affichage du tableau de points à évaluer
+
+ 			/*for (std::multiset<Point*>::iterator it=aEvaluer.begin();
+ 				 it!=aEvaluer.end();
+ 				 ++it )
+ 			{
+ 				std::cout << " ("
+ 				<< (*it)->getLigne() << ','
+ 				<< (*it)->getColonne() << "):"
+ 				<< (*it)->getF();
+ 			} 
+ 			std::cout << '\n';
+ 
+ 			//Affichage du point évalué
+
+         	std::cout << "Point evalue: ("
+ 				<< p->getLigne() << ','
+ 				<< p->getColonne() << "):"
+				<< " f :" << p->getF()
+				<< " g :" << p->getG()
+				<< " h :" << p->getH()
+				<< std::endl;*/
+
 			if(p == endPoint)
 			{
 				ROS_INFO("Arrive au point terminal !");
@@ -316,7 +346,7 @@
 					chemin.push_back(p);
 					p->getPointPrec(prec);
 					p = prec;
-				}while(prec != NULL);
+				} while(prec != NULL);
 
 				std::reverse(chemin.begin(),chemin.end());
 
@@ -327,16 +357,24 @@
 			aEvaluer.erase(p);
 			getVoisins(voisins,p);
 
+			//ROS_INFO("Non evalue, evaluation des voisins");
 			for (i = 0; i < voisins.size(); i++)
 			{
+				// Si voisins[i] a déjà été évalué - iteration suivante
 				if(dejaEvalue.count(voisins[i]) > 0 && voisins[i])
 				{
 					continue;
 				}
 
+				// Sinon - calcul g potentiel
 				signed int newG = p->getG() + voisins[i]->distWith(*p);
 
-				if(aEvaluer.count(voisins[i]) == 0 || newG < voisins[i]->getG())
+				// Si le voisins[i] n'et pas deja dans a evalue 
+				// ou que le nouveau g est plus interessant
+				// on modifie et on stocke
+
+				if( aEvaluer.count(voisins[i]) == 0 ||
+					newG < voisins[i]->getG())
 				{
 					voisins[i]->setPointPrec(p);
 					voisins[i]->setG(newG);
@@ -363,7 +401,9 @@
 			return 0;
 		}
 		else 
+		{
 			return -1;
+		}
 	}
 
 
@@ -381,14 +421,17 @@
 		{
 			for(c=0; c<nbPointsColonnes; c++)
 			{
-				dx = x - _pointsPassage[l][c]->getX();
-				dy = y - _pointsPassage[l][c]->getY();
-				dist = dx*dx+dy*dy;
-
-				if(dist < minDist)
+				if(_pointsPassage[l][c]->isFree())
 				{
-					minDist = dist;
-					point = _pointsPassage[l][c];
+					dx = x - _pointsPassage[l][c]->getX();
+					dy = y - _pointsPassage[l][c]->getY();
+					dist = dx*dx+dy*dy;
+
+					if(dist < minDist)
+					{
+						minDist = dist;
+						point = _pointsPassage[l][c];
+					}
 				}
 			}
 		}
