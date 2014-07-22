@@ -1,8 +1,0 @@
-<launch>
-
-    <group ns="pathfinder">
-        <node pkg="rbqt_pathfinder" name="Pathfinder" type="server_static" launch-prefix="ddd --args"/>
-    </group>
-
-
-</launch>
