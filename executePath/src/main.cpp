@@ -34,7 +34,7 @@
 
 int main(int argc, char** argv)
 {
-
+	ROS_INFO("Start noeud executePath");
 	//Initialisation du noeud ROS
 	ros::init(argc, argv, "executeur_de_chemin");
 	
@@ -83,9 +83,9 @@ int main(int argc, char** argv)
 
 void odomCallback(nav_msgs::Odometry odom)
 {
-	current_x		= (odom).pose.pose.position.x;
-	current_y		= (odom).pose.pose.position.x;
-	current_phi		= tf::getYaw((odom).pose.pose.orientation);
+	current_x		= odom.pose.pose.position.x;
+	current_y		= odom.pose.pose.position.y;
+	current_phi		= tf::getYaw(odom.pose.pose.orientation);
 	
 	//ROS_INFO("I am at this point: [%f, %f] with the angle %f rad (%f deg)", current_x, current_y, current_phi, current_phi*180/PI);
 }
@@ -115,7 +115,7 @@ void pathfinderCallback(rbqt_pathfinder::AstarPath pathFound)
 bool serviceCallback(executePath::command::Request  &req,
         			 executePath::command::Response &res)
 {
-	ROS_INFO("Req reçue - ID : %d | Type : %d",req.ID,req.type);
+	ROS_INFO("Req recue - ID : %d | Type : %d",req.ID,req.type);
 	switch(req.type)
 	{
 		case executePath::command::Request::EXECUTE_PATH :
@@ -214,7 +214,9 @@ void doneCb(const actionlib::SimpleClientGoalState& state,
   // ROS_INFO("Finished in state [%s]", state.toString().c_str());
   // ROS_INFO("Answer: %i", result.goal_reached);
 
-	ROS_INFO("Goal Done");
+	ROS_INFO("\n\n************\nGoal Done");
+	ROS_INFO("Odometry x:%5.2f | y:%5.2f -- Goal x:%5.2f | y:%5.2f",current_x,current_y,pathToFollow.path.poses[actualProcessedPose].pose.position.x, pathToFollow.path.poses[actualProcessedPose].pose.position.y);
+	ROS_INFO("Odometry phi:%5.2f",current_phi);
 
 	if(!firstRotationAlreadyDone)
 	{
@@ -223,12 +225,13 @@ void doneCb(const actionlib::SimpleClientGoalState& state,
 	}
 	else
 	{
-		if(actualProcessedPose == pathToFollow.path.poses.size())
+		if(actualProcessedPose == pathToFollow.path.poses.size()-1)
 		{
 			actualProcessedPose 		= 0;
 			servReq.type 				= Request::NOTHING;
 			firstRotationAlreadyDone 	= false;
 			goalAlreadySent 			= false;
+			EdCState_msg.state = executePath::EdCState::FINISHED;
 		}
 		else
 		{
@@ -238,13 +241,13 @@ void doneCb(const actionlib::SimpleClientGoalState& state,
 		}
 	}
 
-	ROS_INFO("firstRotationAlreadyDone(%d) actualProcessedPose(%d) goalAlreadySent(%d) servReq.type(%d)",firstRotationAlreadyDone,actualProcessedPose,goalAlreadySent,servReq.type);
+	ROS_INFO("END DONE\nfirstRotationAlreadyDone(%d) actualProcessedPose(%d) goalAlreadySent(%d) servReq.type(%d)\n",firstRotationAlreadyDone,actualProcessedPose,goalAlreadySent,servReq.type);
 }
 
 // Called once when the goal becomes active
 void activeCb()
 {
-  ROS_INFO("Goal just went active");
+  ROS_INFO("\nGoal just went active\n");
   goalAlreadySent = true;
 }
 
@@ -289,8 +292,9 @@ void executePath_thread()
 
 			// Construct goal
 				// Dernier point - Rotation + Avance avec Rotation (fixee)
-				if(actualProcessedPose == pathToFollow.path.poses.size())
+				if(actualProcessedPose == pathToFollow.path.poses.size()-1)
 				{
+					ROS_INFO("____________________\nCons Goal\nfirstRotationAlreadyDone(%d) actualProcessedPose(%d) goalAlreadySent(%d) servReq.type(%d)\n",firstRotationAlreadyDone,actualProcessedPose,goalAlreadySent,servReq.type);
 					// Avance
 					if(firstRotationAlreadyDone)
 					{		
@@ -339,8 +343,9 @@ void executePath_thread()
 					}
 				}
 
+				ROS_INFO("Before Send Goal");
 				ROS_INFO("Odometry x:%5.2f | y:%5.2f -- Goal x:%5.2f | y:%5.2f",current_x,current_y,pathToFollow.path.poses[actualProcessedPose].pose.position.x, pathToFollow.path.poses[actualProcessedPose].pose.position.y);
-				ROS_INFO("Odometry phi:%5.2f -- Goal phi:%5.2f\n_____________________",current_phi,actualGoal.rotation+current_phi);
+				ROS_INFO("Odometry phi:%5.2f -- Goal phi:%5.2f\n",current_phi,actualGoal.rotation+current_phi);
 
 				localMoveClient.sendGoal(actualGoal, &doneCb, &activeCb, &feedbackCb);
 				goalAlreadySent = true;
@@ -389,8 +394,10 @@ float calculateRotationNeeded(float startX, float startY, float endX, float endY
 
 float calculateForwardDisplacementNeeded(float startX, float startY, float endX, float endY)
 {
-	float dy = abs(startY - endY);
-	float dx = abs(startX - endX);
+	float dy = fabs(startY - endY);
+	float dx = fabs(startX - endX);
+
+	ROS_INFO("CFDN -> start(%f,%f) | end(%f,%f) - dx%f - dy:%f",startX,startY,endX,endY,dx,dy);
 
 	return sqrt(dx*dx+dy*dy) ;
 }
