@@ -63,6 +63,8 @@ extern rbqt_pathfinder::AstarState pathfinderState;
 extern int lastIdReceived;
 extern std::vector<GridPath> StaticTab;
 
+geometry_msgs::Pose quat_normalize(const geometry_msgs::Pose &p);
+
 void defineOrigin(geometry_msgs::PoseStamped &origin, float xorigin, float yorigin);
 
 geometry_msgs::PoseStamped calculPoint (int xgrille,
@@ -71,6 +73,7 @@ geometry_msgs::PoseStamped calculPoint (int xgrille,
                                         float OffsetGrid);
 
 void affichageTabPath(std::vector<rbqt_pathfinder::AstarPath> &AstarTab);
+
 void affichePath(rbqt_pathfinder::AstarPath &AStar);
 
 void inverserChemin(GridPath &Chemin);

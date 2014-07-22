@@ -85,14 +85,14 @@ void odomCallback(nav_msgs::Odometry odom)
 {
 	current_x		= (odom).pose.pose.position.x;
 	current_y		= (odom).pose.pose.position.x;
-	current_phi	= tf::getYaw((odom).pose.pose.orientation);
+	current_phi		= tf::getYaw((odom).pose.pose.orientation);
 	
 	//ROS_INFO("I am at this point: [%f, %f] with the angle %f rad (%f deg)", current_x, current_y, current_phi, current_phi*180/PI);
 }
 
 void bumperCallback(std_msgs::Bool bumper)
 {
-	bumperState = bumper.data;
+	bumperState 	= bumper.data;
 }
 
 void pathfinderCallback(rbqt_pathfinder::AstarPath pathFound)
@@ -113,7 +113,7 @@ void pathfinderCallback(rbqt_pathfinder::AstarPath pathFound)
 }
 
 bool serviceCallback(executePath::command::Request  &req,
-        executePath::command::Response &res)
+        			 executePath::command::Response &res)
 {
 	ROS_INFO("Req reçue - ID : %d | Type : %d",req.ID,req.type);
 	switch(req.type)
@@ -123,23 +123,23 @@ bool serviceCallback(executePath::command::Request  &req,
 			ID = req.ID;
 
 			// On execute un nouveau chemin que si on est libre (LIBRE, FINISHED et BAD_ID)
-			if(EdCState_msg.state == executePath::EdCState::LIBRE
-				|| EdCState_msg.state == executePath::EdCState::BAD_ID
-				|| EdCState_msg.state == executePath::EdCState::FINISHED)
+			if( EdCState_msg.state == executePath::EdCState::LIBRE ||
+				EdCState_msg.state == executePath::EdCState::BAD_ID ||
+				EdCState_msg.state == executePath::EdCState::FINISHED)
 			{
 				if(findPath(pathToFollow, listOfPath, ID))
 				{
-					res.accepted = true;
-					lastState = EdCState_msg.state;
-					EdCState_msg.state = executePath::EdCState::IN_PROGRESS;
-					EdCState_msg.ID = ID;	
-					servReq = req;
+					res.accepted 		= true;
+					lastState 			= EdCState_msg.state;
+					EdCState_msg.state 	= executePath::EdCState::IN_PROGRESS;
+					EdCState_msg.ID 	= ID;	
+					servReq 			= req;
 				}
 				else
 				{
-					res.accepted = false;
-					lastState = EdCState_msg.state;
-					EdCState_msg.state = executePath::EdCState::BAD_ID;											
+					res.accepted 		= false;
+					lastState 			= EdCState_msg.state;
+					EdCState_msg.state 	= executePath::EdCState::BAD_ID;											
 				}
 			}
 			else
@@ -150,14 +150,14 @@ bool serviceCallback(executePath::command::Request  &req,
 
 		case executePath::command::Request::PAUSE :
 			// On met PAUSE que quand un chemin s'execute (PROBLEM, OBSTACLE, IN_PROGRESS)
-			if(EdCState_msg.state == executePath::EdCState::IN_PROGRESS
-				|| EdCState_msg.state == executePath::EdCState::OBSTACLE
-				|| EdCState_msg.state == executePath::EdCState::PROBLEM)
+			if( EdCState_msg.state == executePath::EdCState::IN_PROGRESS ||
+				EdCState_msg.state == executePath::EdCState::OBSTACLE ||
+				EdCState_msg.state == executePath::EdCState::PROBLEM)
 			{
-				res.accepted = true;
-				lastState = EdCState_msg.state;
-				EdCState_msg.state = executePath::EdCState::PAUSED;			
-				servReq = req;
+				res.accepted		= true;
+				lastState			= EdCState_msg.state;
+				EdCState_msg.state 	= executePath::EdCState::PAUSED;			
+				servReq 			= req;
 			}
 			else
 			{
@@ -169,10 +169,10 @@ bool serviceCallback(executePath::command::Request  &req,
 			// On RESUME uniquement quand on est en pause
 			if(EdCState_msg.state == executePath::EdCState::PAUSED)
 			{
-				res.accepted = true;
-				EdCState_msg.state = lastState;	
-				lastState = executePath::EdCState::PAUSED;	
-				servReq = req;
+				res.accepted 		= true;
+				EdCState_msg.state 	= lastState;	
+				lastState 			= executePath::EdCState::PAUSED;	
+				servReq 			= req;
 			}
 			else
 			{
@@ -182,15 +182,15 @@ bool serviceCallback(executePath::command::Request  &req,
 
 		case executePath::command::Request::CANCEL :
 			// On annulle que quand un chemin s'execute ou est en pause (PROBLEM, OBSTACLE, IN_PROGRESS, PAUSED)
-			if(EdCState_msg.state == executePath::EdCState::IN_PROGRESS
-				|| EdCState_msg.state == executePath::EdCState::OBSTACLE
-				|| EdCState_msg.state == executePath::EdCState::PROBLEM
-				|| EdCState_msg.state == executePath::EdCState::PAUSED)
+			if( EdCState_msg.state == executePath::EdCState::IN_PROGRESS ||
+				EdCState_msg.state == executePath::EdCState::OBSTACLE ||
+				EdCState_msg.state == executePath::EdCState::PROBLEM ||
+				EdCState_msg.state == executePath::EdCState::PAUSED)
 			{
-				res.accepted = true;
-				lastState = EdCState_msg.state;
-				EdCState_msg.state = executePath::EdCState::LIBRE;			
-				servReq = req;
+				res.accepted 		= true;
+				lastState 			= EdCState_msg.state;
+				EdCState_msg.state 	= executePath::EdCState::LIBRE;			
+				servReq 			= req;
 			}
 			else
 			{
@@ -218,23 +218,23 @@ void doneCb(const actionlib::SimpleClientGoalState& state,
 
 	if(!firstRotationAlreadyDone)
 	{
-		firstRotationAlreadyDone = true;
-		goalAlreadySent = false;
+		firstRotationAlreadyDone 	= true;
+		goalAlreadySent 			= false;
 	}
 	else
 	{
 		if(actualProcessedPose == pathToFollow.path.poses.size())
 		{
-			actualProcessedPose = 0;
-			servReq.type = Request::NOTHING;
-			firstRotationAlreadyDone = false;
-			goalAlreadySent = false;
+			actualProcessedPose 		= 0;
+			servReq.type 				= Request::NOTHING;
+			firstRotationAlreadyDone 	= false;
+			goalAlreadySent 			= false;
 		}
 		else
 		{
 			actualProcessedPose++;
 			firstRotationAlreadyDone = false;
-			goalAlreadySent = false;
+			goalAlreadySent			 = false;
 		}
 	}
 
@@ -294,8 +294,8 @@ void executePath_thread()
 					// Avance
 					if(firstRotationAlreadyDone)
 					{		
-						actualGoal.move_x = calculateForwardDisplacementNeeded(current_x, current_y, pathToFollow.path.poses[actualProcessedPose].pose.position.x,pathToFollow.path.poses[actualProcessedPose].pose.position.y);
-						actualGoal.move_y = 0.0;
+						actualGoal.move_x 	= calculateForwardDisplacementNeeded(current_x, current_y, pathToFollow.path.poses[actualProcessedPose].pose.position.x,pathToFollow.path.poses[actualProcessedPose].pose.position.y);
+						actualGoal.move_y 	= 0.0;
 						actualGoal.rotation = tf::getYaw(pathToFollow.path.poses[actualProcessedPose].pose.orientation) - current_phi;
 
 						actualGoal.ignore_rotation = false;	
@@ -319,8 +319,8 @@ void executePath_thread()
 					// Avance
 					if(firstRotationAlreadyDone)
 					{		
-						actualGoal.move_x = calculateForwardDisplacementNeeded(current_x, current_y, pathToFollow.path.poses[actualProcessedPose].pose.position.x,pathToFollow.path.poses[actualProcessedPose].pose.position.y);
-						actualGoal.move_y = 0.0;
+						actualGoal.move_x 	= calculateForwardDisplacementNeeded(current_x, current_y, pathToFollow.path.poses[actualProcessedPose].pose.position.x,pathToFollow.path.poses[actualProcessedPose].pose.position.y);
+						actualGoal.move_y 	= 0.0;
 						actualGoal.rotation = 0.0;
 
 						actualGoal.ignore_rotation = true;	

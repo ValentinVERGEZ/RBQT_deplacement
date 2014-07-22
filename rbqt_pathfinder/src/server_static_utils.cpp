@@ -4,7 +4,12 @@ geometry_msgs::PoseStamped origin;
 
 std::vector<rbqt_pathfinder::AstarPath> AstarTab;
 
-
+geometry_msgs::Pose quat_normalize(const geometry_msgs::Pose &p)
+{
+    geometry_msgs::Pose r = p;
+    r.orientation.w = sqrt(1 - pow(r.orientation.x, 2) - pow(r.orientation.y, 2) - pow(r.orientation.x, 2));
+    return r;
+}
 
 void defineOrigin(geometry_msgs::PoseStamped &origin, float xorigin, float yorigin)
 {
@@ -92,9 +97,9 @@ void initGridPath(std::vector<GridPath> &StaticTab)
     
     GridPath Chemin6;
     
-    Chemin6.push_back(GridPoint(7, 0));
-    Chemin6.push_back(GridPoint(6, 1));
-    Chemin6.push_back(GridPoint(6, 2));
+    Chemin6.push_back(GridPoint(3, 5));
+    Chemin6.push_back(GridPoint(4, 5));
+    Chemin6.push_back(GridPoint(5, 4));
     Chemin6.push_back(GridPoint(6, 3));
     Chemin6.push_back(GridPoint(7, 3));
     
@@ -118,12 +123,7 @@ void initGridPath(std::vector<GridPath> &StaticTab)
     
     GridPath Chemin10;
     
-    Chemin10.push_back(GridPoint(9, 0));
-    Chemin10.push_back(GridPoint(8, 1));
-    Chemin10.push_back(GridPoint(8, 2));
-    Chemin10.push_back(GridPoint(8, 3));
-    Chemin10.push_back(GridPoint(8, 4));
-    Chemin10.push_back(GridPoint(8, 5));
+    Chemin10.push_back(GridPoint(7, 5));
     Chemin10.push_back(GridPoint(8, 6));
     Chemin10.push_back(GridPoint(9, 7));
     
@@ -264,7 +264,7 @@ void getPathFromEndPoint   (std::vector<rbqt_pathfinder::AstarPath> tabResult,
             yarrivee * tabResult[i].path.poses.back().pose.position.y >= 0 &&
             sqrt(dx*dx+dy*dy) <= sqrt(POSE_TOLERANCE*POSE_TOLERANCE))
         {
-            pathFound = tabResult[i];
+            pathFound.path = tabResult[i].path;
             ROS_INFO("\n\n--------------\nEndX : %f | EndY : %f", tabResult[i].path.poses.back().pose.position.x,
                                               tabResult[i].path.poses.back().pose.position.y);
         }
@@ -288,10 +288,9 @@ void computeAStar_thread_function()
             pathReq.processing = true;
             pathfinderState.state = pathfinderState.EN_COURS;
 
-            lastId = pathReq.id;
-
             actualOrders = pathReq;
 
+            lastId = actualOrders.id;
             pathFound.id = actualOrders.id;
 
             ROS_INFO("avant erase");
