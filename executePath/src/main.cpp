@@ -238,7 +238,14 @@ void doneCb(const actionlib::SimpleClientGoalState& state,
 		}
 	}
 
-	ROS_INFO("firstRotationAlreadyDone(%d) actualProcessedPose(%d) goalAlreadySent(%d) servReq.type(%d)",firstRotationAlreadyDone,actualProcessedPose,goalAlreadySent,servReq.type);
+	ROS_INFO("firstRotationAlreadyDone(%d)
+			  actualProcessedPose(%d)
+			  goalAlreadySent(%d)
+			  servReq.type(%d)",
+			  firstRotationAlreadyDone,
+			  actualProcessedPose,
+			  goalAlreadySent,
+			  servReq.type);
 }
 
 // Called once when the goal becomes active
@@ -294,12 +301,22 @@ void executePath_thread()
 					// Avance
 					if(firstRotationAlreadyDone)
 					{		
-						actualGoal.move_x 	= calculateForwardDisplacementNeeded(current_x, current_y, pathToFollow.path.poses[actualProcessedPose].pose.position.x,pathToFollow.path.poses[actualProcessedPose].pose.position.y);
+						actualGoal.move_x 	=
+							calculateForwardDisplacementNeeded(
+								current_x,
+								current_y,
+								pathToFollow.path.poses[actualProcessedPose].pose.position.x,
+								pathToFollow.path.poses[actualProcessedPose].pose.position.y);
 						actualGoal.move_y 	= 0.0;
-						actualGoal.rotation = tf::getYaw(pathToFollow.path.poses[actualProcessedPose].pose.orientation) - current_phi;
+						actualGoal.rotation =
+							tf::getYaw(
+								pathToFollow.path.poses[actualProcessedPose].pose.orientation) - current_phi;
 
 						actualGoal.ignore_rotation = false;	
-						ROS_INFO("Construct new goal - (Last Point) Avance %f - Rotation %f",actualGoal.move_x,actualGoal.rotation);
+						ROS_INFO("Construct new goal -
+							(Last Point) Avance %f - Rotation %f",
+							actualGoal.move_x,
+							actualGoal.rotation);
 					}
 					// Rotation
 					else
@@ -310,7 +327,9 @@ void executePath_thread()
 						actualGoal.rotation = calculateRotationNeeded(current_x, current_y, pathToFollow.path.poses[actualProcessedPose].pose.position.x,pathToFollow.path.poses[actualProcessedPose].pose.position.y) - current_phi;
 
 						actualGoal.ignore_rotation = false;
-						ROS_INFO("Construct new goal - (Last Point) First Rotation %f",actualGoal.rotation);
+						ROS_INFO("Construct new goal -
+							(Last Point) First Rotation %f",
+							actualGoal.rotation);
 					}
 				}
 				// Autre point - Rotation + Avance
@@ -324,7 +343,8 @@ void executePath_thread()
 						actualGoal.rotation = 0.0;
 
 						actualGoal.ignore_rotation = true;	
-						ROS_INFO("Construct new goal - Avance %f",actualGoal.move_x);
+						ROS_INFO("Construct new goal - Avance %f",
+								  actualGoal.move_x);
 					}
 					// Rotation
 					else
@@ -335,12 +355,23 @@ void executePath_thread()
 						actualGoal.rotation = calculateRotationNeeded(current_x, current_y, pathToFollow.path.poses[actualProcessedPose].pose.position.x,pathToFollow.path.poses[actualProcessedPose].pose.position.y) - current_phi;
 
 						actualGoal.ignore_rotation = false;
-						ROS_INFO("Construct new goal - First Rotation %f",actualGoal.rotation);
+						ROS_INFO("Construct new goal -
+							First Rotation %f",
+							actualGoal.rotation);
 					}
 				}
 
-				ROS_INFO("Odometry x:%5.2f | y:%5.2f -- Goal x:%5.2f | y:%5.2f",current_x,current_y,pathToFollow.path.poses[actualProcessedPose].pose.position.x, pathToFollow.path.poses[actualProcessedPose].pose.position.y);
-				ROS_INFO("Odometry phi:%5.2f -- Goal phi:%5.2f\n_____________________",current_phi,actualGoal.rotation+current_phi);
+				ROS_INFO("Odometry x:%5.2f | y:%5.2f --
+						  Goal x:%5.2f | y:%5.2f",
+						  current_x,
+						  current_y,
+						  pathToFollow.path.poses[actualProcessedPose].pose.position.x,
+						  pathToFollow.path.poses[actualProcessedPose].pose.position.y);
+				
+				ROS_INFO("Odometry phi:%5.2f --
+						  Goal phi:%5.2f\n_____________________",
+						  current_phi,
+						  actualGoal.rotation + current_phi);
 
 				localMoveClient.sendGoal(actualGoal, &doneCb, &activeCb, &feedbackCb);
 				goalAlreadySent = true;
