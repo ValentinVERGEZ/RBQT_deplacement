@@ -4,7 +4,7 @@
 
 /*==========  Global variables  ==========*/
 PathOrders pathReq = {-1,{0.0,0.0,0.0},{0.0,0},false};
-rbqt_pathfinder::AstarPath pathFound;
+rbqt_pathfinder::AstarPath  pathFound;
 rbqt_pathfinder::AstarState pathfinderState;
 int lastIdReceived = -1;
 
@@ -15,11 +15,11 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
 
     pathfinderState.state = pathfinderState.LIBRE;
-    pathfinderState.id = lastIdReceived;
-    pathFound.id = lastIdReceived;
+    pathfinderState.id    = lastIdReceived;
+    pathFound.id          = lastIdReceived;
 
-    ros::Publisher path_pub = n.advertise<rbqt_pathfinder::AstarPath>("pathFound", 1000);
-    ros::Publisher state_pub = n.advertise<rbqt_pathfinder::AstarState>("pathfinderState", 1000);
+    ros::Publisher path_pub    = n.advertise<rbqt_pathfinder::AstarPath>("pathFound", 1000);
+    ros::Publisher state_pub   = n.advertise<rbqt_pathfinder::AstarState>("pathfinderState", 1000);
     ros::ServiceServer service = n.advertiseService("generatePath", generatePath_callback);
     ROS_INFO("Ready to compute A Star pathfinding.");
 
@@ -44,25 +44,40 @@ bool generatePath_callback(rbqt_pathfinder::GeneratePath::Request  &req,
          rbqt_pathfinder::GeneratePath::Response &res)
 {
     ROS_INFO("GeneratePath request - ID : %d", req.id);
-    if(!req.utilisePositionOdometry){
-        ROS_INFO("Pose Depart (Utilisation du parametre) : \nX: %f | Y : %f | Theta : %f",req.Depart.position.x,req.Depart.position.y,tf::getYaw(req.Depart.orientation));
+    if(!req.utilisePositionOdometry)
+    {
+        ROS_INFO("Pose Depart (Utilisation du parametre) : \n
+                  X: %f |
+                  Y : %f |
+                  Theta : %f",
+                  req.Depart.position.x,
+                  req.Depart.position.y,
+                  tf::getYaw(req.Depart.orientation));
     }
     else
     {
         ROS_INFO("Pose Depart (Utilisation de l'odometrie): \nX: %f | Y : %f | Theta : %f",0.0,0.0,0.0);
     }
-    ROS_INFO("Pose Arrivee : \nX: %f | Y : %f | Theta : %f",req.Arrivee.position.x,req.Arrivee.position.y,tf::getYaw(req.Arrivee.orientation));
+    ROS_INFO("Pose Arrivee :\n
+              X: %f |
+              Y : %f |
+              Theta : %f",
+              req.Arrivee.position.x,
+              req.Arrivee.position.y,
+              tf::getYaw(req.Arrivee.orientation));
 
-    if(pathReq.processing == true || req.id == lastIdReceived){
+    if(pathReq.processing == true || req.id == lastIdReceived)
+    {
         res.requeteAcceptee = false;
     }
-    else{
+    else
+    {
         res.requeteAcceptee = true;
         lastIdReceived = req.id;
 
-        pathReq.id = req.id;
-        pathReq.goalPose.x = req.Arrivee.position.x;
-        pathReq.goalPose.y = req.Arrivee.position.y;
+        pathReq.id           = req.id;
+        pathReq.goalPose.x   = req.Arrivee.position.x;
+        pathReq.goalPose.y   = req.Arrivee.position.y;
         pathReq.goalPose.yaw = tf::getYaw(req.Arrivee.orientation);
         if(!req.utilisePositionOdometry)
         {
@@ -102,16 +117,29 @@ void computeAStar_thread_function()
 
             actualOrders = pathReq;
 
-            mapRobocup.getNearestPoint(pathReq.goalPose.x,pathReq.goalPose.y,endPoint);
-            mapRobocup.getNearestPoint(pathReq.startPose.x,pathReq.startPose.y,startPoint);
+            mapRobocup.getNearestPoint(
+                pathReq.goalPose.x,
+                pathReq.goalPose.y,
+                endPoint);
+            mapRobocup.getNearestPoint(
+                pathReq.startPose.x,
+                pathReq.startPose.y,
+                startPoint);
 
             ROS_INFO("computeAStar with : Start - x %f | y %f  /  End - x %f | y %f",startPoint->getX(),startPoint->getY(),endPoint->getX(),endPoint->getY());
 
             pathFound.id = actualOrders.id;
-            pathFound.path.poses.erase(pathFound.path.poses.begin(),pathFound.path.poses.end());
-            mapRobocup.computeAStar(chemin, startPoint, endPoint);
+            pathFound.path.poses.erase(
+                pathFound.path.poses.begin(),
+                pathFound.path.poses.end());
+
+            mapRobocup.computeAStar(
+                chemin,
+                startPoint,
+                endPoint);
 
             pathfinderState.id = actualOrders.id;
+
             if(chemin.front() == startPoint && chemin.back() == endPoint)
             {
                 std::size_t i;
@@ -125,7 +153,8 @@ void computeAStar_thread_function()
                 geometry_msgs::PoseStamped pointFinal;
                 pointFinal.pose.position.x = chemin[i]->getX();
                 pointFinal.pose.position.y = chemin[i]->getY();
-                pointFinal.pose.orientation = tf::createQuaternionMsgFromYaw(actualOrders.goalPose.yaw);
+                pointFinal.pose.orientation =
+                    tf::createQuaternionMsgFromYaw(actualOrders.goalPose.yaw);
                 pathFound.path.poses.push_back(pointFinal);
 
                 pathfinderState.state = pathfinderState.SUCCES;
@@ -133,7 +162,11 @@ void computeAStar_thread_function()
             else
                 pathfinderState.state = pathfinderState.ECHEC;
 
-            ROS_INFO("%p == %p && %p == %p",chemin.front(), startPoint, chemin.back(), endPoint);
+            ROS_INFO("%p == %p && %p == %p",
+                chemin.front(),
+                startPoint,
+                chemin.back(),
+                endPoint);
 
             pathReq.processing = false;
         }

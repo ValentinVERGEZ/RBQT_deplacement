@@ -5,9 +5,11 @@
 	{
 		setPosition(x,y);
 		setType(type);
+
 	#ifdef GRAPHIC
 		constructShape();
 	#endif
+
 		setH(0);
 		setG(0);
 		setF(0);
@@ -18,12 +20,13 @@
 
 	Point::Point(float x, float y, signed int ligne, signed int colonne, typePoint type)
 	{
-		//Point(x,y,ligne,colonne,type);
 		setPosition(x,y);
 		setType(type);
+
 	#ifdef GRAPHIC
 		constructShape();
 	#endif
+
 		setH(0);
 		setG(0);
 		setF(0);
@@ -136,11 +139,11 @@
 
 	signed int Point::distWith(Point const& pointDistant) const
 	{
-		signed int dist = 0;
+		signed int dist  = 0;
 		signed int distX = 0, distY = 0;
 
-		distX = std::abs(pointDistant.getX() - getX());
-		distY = std::abs(pointDistant.getY() - getY());
+		distX = fabs(pointDistant.getX() - getX());
+		distY = fabs(pointDistant.getY() - getY());
 
 		dist = std::sqrt(std::pow(distX,2)+std::pow(distY,2));
 

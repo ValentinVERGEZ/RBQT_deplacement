@@ -83,10 +83,10 @@
 		_pointsPassage[8][18]->setType(INTERDIT);
 		std::cout << "DONE" << std::endl;
 
-		_allowDiagonal = true;
-		_crossCorner = false;
-		_heuristicFonction = MANHATTAN;
-		_poidsHeuristic = 1;
+		_allowDiagonal 		= true;
+		_crossCorner 		= false;
+		_heuristicFonction  = MANHATTAN;
+		_poidsHeuristic 	= 1;
 
 		std::cout << "Objet Map correctement instancié" << std::endl;
 	}
@@ -131,24 +131,24 @@
 
 	float Map::heuristicManhattan(Point const& pointDepart, Point const& pointDistant)
 	{
-		float dist = 0;
+		float dist  = 0;
 		float distX = 0, distY = 0;
 
-		distX = std::abs(pointDistant.getX() - pointDepart.getX());
-		distY = std::abs(pointDistant.getY() - pointDepart.getY());
+		distX = fabs(pointDistant.getX() - pointDepart.getX());
+		distY = fabs(pointDistant.getY() - pointDepart.getY());
 
-		dist = distX+distY;
+		dist  = distX + distY;
 
 		return dist;
 	}
 
 	float Map::heuristicEuclidean(Point const& pointDepart, Point const& pointDistant)
 	{
-		float dist = 0;
+		float dist  = 0;
 		float distX = 0, distY = 0;
 
-		distX = std::abs(pointDistant.getX() - pointDepart.getX());
-		distY = std::abs(pointDistant.getY() - pointDepart.getY());
+		distX = fabs(pointDistant.getX() - pointDepart.getX());
+		distY = fabs(pointDistant.getY() - pointDepart.getY());
 
 		dist = std::sqrt(std::pow(distX,2)+std::pow(distY,2));
 
@@ -160,8 +160,8 @@
 		float dist = 0;
 		float distX = 0, distY = 0;
 
-		distX = std::abs(pointDistant.getX() - pointDepart.getX());
-		distY = std::abs(pointDistant.getY() - pointDepart.getY());
+		distX = fabs(pointDistant.getX() - pointDepart.getX());
+		distY = fabs(pointDistant.getY() - pointDepart.getY());
 
 		dist = std::max(distX,distY);
 
@@ -198,31 +198,35 @@
 		voisins.clear();
 		signed int col, li;
 		col = oirigin->getColonne();
-		li = oirigin->getLigne();
+		li  = oirigin->getLigne();
 
 		bool s0 = false, d0 = false,
-        s1 = false, d1 = false,
-        s2 = false, d2 = false,
-        s3 = false, d3 = false;
+        	 s1 = false, d1 = false,
+        	 s2 = false, d2 = false,
+        	 s3 = false, d3 = false;
 
 
 	    // ↑
-	    if (isFreeAt(li - 1, col)) {
+	    if (isFreeAt(li - 1, col))
+	    {
 	        voisins.push_back(_pointsPassage[li - 1][col]);
 	        s0 = true;
 	    }
 	    // →
-	    if (isFreeAt(li, col + 1)) {
+	    if (isFreeAt(li, col + 1))
+	    {
 	        voisins.push_back(_pointsPassage[li][col + 1]);
 	        s1 = true;
 	    }
 	    // ↓
-	    if (isFreeAt(li + 1, col)) {
+	    if (isFreeAt(li + 1, col))
+	    {
 	        voisins.push_back(_pointsPassage[li + 1][col]);
 	        s2 = true;
 	    }
 	    // ←
-	    if (isFreeAt(li, col - 1)) {
+	    if (isFreeAt(li, col - 1))
+	    {
 	        voisins.push_back(_pointsPassage[li][col - 1]);
 	        s3 = true;
 	    }
@@ -230,12 +234,15 @@
 	    if (!_allowDiagonal)
 	        return 0;
 
-	    if (!_crossCorner) {
+	    if (!_crossCorner)
+	    {
 	        d0 = s3 && s0;
 	        d1 = s0 && s1;
 	        d2 = s1 && s2;
 	        d3 = s2 && s3;
-	    } else {
+	    }
+	    else
+	    {
 	        d0 = s3 || s0;
 	        d1 = s0 || s1;
 	        d2 = s1 || s2;
@@ -243,70 +250,32 @@
 	    }
 
 	    // ↖
-	    if (d0 && isFreeAt(li - 1, col - 1)) {
+	    if (d0 && isFreeAt(li - 1, col - 1))
+	    {
 	        voisins.push_back(_pointsPassage[li - 1][col - 1]);
 	    }
 	    // ↗
-	    if (d1 && isFreeAt(li - 1, col + 1)) {
+	    if (d1 && isFreeAt(li - 1, col + 1))
+	    {
 	        voisins.push_back(_pointsPassage[li - 1][col + 1]);
 	    }
 	    // ↘
-	    if (d2 && isFreeAt(li + 1, col + 1)) {
+	    if (d2 && isFreeAt(li + 1, col + 1))
+	    {
 	        voisins.push_back(_pointsPassage[li + 1][col + 1]);
 	    }
 	    // ↙
-	    if (d3 && isFreeAt(li + 1, col - 1)) {
+	    if (d3 && isFreeAt(li + 1, col - 1))
+	    {
 	        voisins.push_back(_pointsPassage[li + 1][col - 1]);
 	    }
 	    return 0;
 	}
 
-	signed int Map::computeAStar(std::vector<Point*> &chemin, Point *startPoint, Point *endPoint)
+	signed int Map::computeAStar(std::vector<Point*> &chemin,
+								 Point *startPoint,
+								 Point *endPoint)
 	{
-		/* Just for test */
-		// std::vector<Point*> cheminInv;
-		// cheminInv.push_back(startPoint);
-		// chemin.push_back(endPoint);
-		
-		// std::cout << "Computing AStar ..." << std::endl;
-
-		// std::cout << "Test isFreeAt() ..." << std::endl;
-		// _pointsPassage[4][5]->setType(INTERDIT);
-		// std::cout << "2.3 : " << ((isFreeAt(2,3))?"FREE":"NOT") << " 4.5 : " << ((isFreeAt(4,5))?"FREE":"NOT") << std::endl;
-
-		// std::cout << "Test getVoisins() ... " << std::endl;
-		// std::vector<Point*> voisins;
-		// unsigned int i;
-		// getVoisins(voisins,_pointsPassage[4][6]);		
-		// std::cout << "voisins.size() = " << voisins.size() << std::endl;
-		// for (i = 0; i < voisins.size(); i++)
-		// {
-		// 	std::cout << "Voisins : " << voisins[i]->getLigne() << "," << voisins[i]->getColonne() << std::endl;
-		// }
-		// voisins.clear();
-
-
-		// std::cout << "Test getVoisins() without crossing corner... " << std::endl;
-		// setCrossCorner(false);
-		// getVoisins(voisins,_pointsPassage[4][6]);		
-		// std::cout << "voisins.size() = " << voisins.size() << std::endl;
-		// for (i = 0; i < voisins.size(); i++)
-		// {
-		// 	std::cout << "Voisins : " << voisins[i]->getLigne() << "," << voisins[i]->getColonne() << std::endl;
-		// }
-		// voisins.clear();
-
-		// std::cout << "Test getVoisins() without diagonals... " << std::endl;
-		// setCrossCorner(true);
-		// setAllowDiagonal(false);
-		// getVoisins(voisins,_pointsPassage[4][6]);		
-		// std::cout << "voisins.size() = " << voisins.size() << std::endl;
-		// for (i = 0; i < voisins.size(); i++)
-		// {
-		// 	std::cout << "Voisins : " << voisins[i]->getLigne() << "," << voisins[i]->getColonne() << std::endl;
-		// }
-		// voisins.clear();
-
 
 //Création des points
 		#ifdef GRAPHIC
@@ -326,34 +295,45 @@
 		unsigned int i;
 
 		aEvaluer.insert(startPoint);
+
 		while(!aEvaluer.empty())
 		{
-			//std::multiset<Point*>::iterator p;
 			Point *p;
-			// p = *(--(aEvaluer.end()));
+
 			p = *(aEvaluer.begin());
+
 			#ifdef GRAPHIC
 			p->_shape->setFillColor(sf::Color::Blue);
 			#endif
 
 			std::cout << "A Evaluer Contains:";
-			for (std::multiset<Point*>::iterator it=aEvaluer.begin(); it!=aEvaluer.end(); ++it )
-			  	std::cout << ' ' << (*it)->getF();
+			for (std::multiset<Point*>::iterator it=aEvaluer.begin();
+				 it!=aEvaluer.end();
+				 ++it )
+			{
+				std::cout << ' ' << (*it)->getF();
+			}
 
 			std::cout << '\n';
 
 
-        	std::cout << "Point evalue: " << p->getLigne() << "," << p->getColonne() << " f :" << p->getF()  << " g :" << p->getG()  << " h :" << p->getH() << std::endl;
+        	std::cout << "Point evalue: " << p->getLigne() << "," << p->getColonne()
+        			  << " f :" << p->getF()
+        			  << " g :" << p->getG()
+        			  << " h :" << p->getH()
+        			  << std::endl;
 
 			if(p == endPoint)
 			{
 				std::cout << "Arrive au point terminal !" << std::endl;
+
 				Point* prec;
 				do
 				{
 					#ifdef GRAPHIC
 					p->_shape->setFillColor(sf::Color::Green);
 					#endif
+
 					chemin.push_back(p);
 					p->getPointPrec(prec);
 					p = prec;
@@ -372,7 +352,9 @@
 			for (i = 0; i < voisins.size(); i++)
 			{
 				if(dejaEvalue.count(voisins[i]) > 0 && voisins[i])
+				{
 					continue;
+				}
 
 				std::cout << "Voisin " << i << std::endl;
 
@@ -384,9 +366,15 @@
 					voisins[i]->setG(newG);
 					voisins[i]->setH((voisins[i]->getH())?voisins[i]->getH():heuristic(*voisins[i], *endPoint));
 					voisins[i]->setF(voisins[i]->getG()+_poidsHeuristic*voisins[i]->getH());
+					
 					aEvaluer.insert(voisins[i]);
 
-        			std::cout << "\tNouveau Voisin : " << voisins[i]->getLigne() << "," << voisins[i]->getColonne() << " f :" << voisins[i]->getF()  << " g :" << voisins[i]->getG()  << " h :" << voisins[i]->getH() << std::endl;
+        			std::cout << "\tNouveau Voisin : "  << voisins[i]->getLigne()
+        												<< "," << voisins[i]->getColonne()
+        												<< " f :" << voisins[i]->getF()
+        												<< " g :" << voisins[i]->getG()
+        												<< " h :" << voisins[i]->getH()
+        												<< std::endl;
 				}
 			}
 		}
@@ -397,7 +385,10 @@
 
 	signed int Map::getPointAt(signed int ligne, signed int colonne, Point*& point) const
 	{
-		if(ligne < nbPointsLignes && ligne >= 0 && colonne < nbPointsColonnes && colonne>=0)
+		if( ligne < nbPointsLignes &&
+			ligne >= 0 &&
+			colonne < nbPointsColonnes &&
+			colonne>=0)
 		{
 			point = _pointsPassage[ligne][colonne];
 			return 0;
@@ -410,7 +401,9 @@
 	signed int Map::getNearestPoint(float x, float y, Point*& point) const
 	{
 		if(nbPointsLignes == 0 || nbPointsColonnes == 0)
+		{
 			return -1;
+		}
 
 		int l, c;
 		float dist, dx, dy, minDist = FLT_MAX;
@@ -422,6 +415,7 @@
 				dx = x - _pointsPassage[l][c]->getX();
 				dy = y - _pointsPassage[l][c]->getY();
 				dist = dx*dx+dy*dy;
+
 				if(dist < minDist)
 				{
 					minDist = dist;
@@ -439,17 +433,27 @@
 	int Map::drawObjects(sf::RenderWindow &w)
 	{		
 		for(int i=0; i < nbProductionMachine; i++)
+		{
         	w.draw(*(_production_machine[i]->_shape));
+		}
 
 		for(int i=0; i < nbDeliveryMachine; i++)
+		{
         	w.draw(*(_delivery_machine[i]->_shape));
+		}
 
 		for(int i=0; i < nbRecyclingMachine; i++)
+		{
         	w.draw(*(_recycling_machine[i]->_shape));
+		}
 
 		for(int i=0; i < nbPointsLignes; i++)
+		{
 			for (int j = 0; j < nbPointsColonnes; ++j)
+			{
 	        	w.draw(*(_pointsPassage[i][j]->_shape));
+			}
+		}
 
 		return 0;
 	}
