@@ -6,6 +6,7 @@
 		setType(type);
 		setPosition(x, y);
 		_phi = 0;
+
 	#ifdef GRAPHIC
 		constuctShape();
 	#endif
@@ -15,6 +16,7 @@
 	{
 		setType(type);
 		setPosition(x, y, phi);
+
 	#ifdef GRAPHIC
 		constuctShape();
 	#endif
@@ -37,9 +39,13 @@
 		setPosition(x, y);
 		_phi = (phi%360);
         if (_phi > 180)
+        {
             _phi = _phi-360;
-        else if(_phi <= -180)
-            _phi = _phi+360;
+        }
+        else 	if(_phi <= -180)
+		        {
+		            _phi = _phi+360;
+		        }
 
 		return 0;
 	}

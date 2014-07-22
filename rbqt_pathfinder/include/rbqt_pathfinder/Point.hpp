@@ -25,18 +25,18 @@ public:
 	// AStar
 	int setPointPrec(Point *pointPrecedent);
 	int getPointPrec(Point *&pointPrecedent);
-	signed int getH() const;
-	signed int getG() const;
-	signed int getF() const;
-	void setH(signed int h);
-	void setG(signed int g);
-	void setF(signed int f);
+	float getH() const;
+	float getG() const;
+	float getF() const;
+	void setH(float h);
+	void setG(float g);
+	void setF(float f);
 	signed int getLigne() const;
 	signed int getColonne() const;
 	void setLigne(signed int ligne);
 	void setColonne(signed int colonne);
 	bool isFree();
-	signed int distWith(Point const& pointDistant) const;
+	float distWith(Point const& pointDistant) const;
 
 #ifdef GRAPHIC
 	int constructShape();
@@ -56,9 +56,9 @@ private:
 
 	// AStar
 	Point *_pointPrecedent;
-	signed int _h;
-	signed int _g;
-	signed int _f;
+	float _h;
+	float _g;
+	float _f;
 
 	// Graphique
 	#ifdef GRAPHIC
