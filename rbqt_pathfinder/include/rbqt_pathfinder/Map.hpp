@@ -36,7 +36,7 @@ public:
 	signed int getVoisins(std::vector<Point*> &voisins, Point *oirigin);
 	signed int computeAStar(std::vector<Point*> &chemin, Point *startPoint, Point *endPoint);
 	signed int getPointAt(signed int ligne, signed int colonne, Point*& point) const;
-	signed int getNearestPoint(int x, int y, Point*& point) const;
+	signed int getNearestPoint(float x, float y, Point*& point) const;
 
 #ifdef GRAPHIC
 	int drawObjects(sf::RenderWindow &w);

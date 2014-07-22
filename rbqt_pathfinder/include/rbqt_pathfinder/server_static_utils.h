@@ -4,7 +4,6 @@
 #include <iostream>
 
 #ifdef GRAPHIC
-
 #include <SFML/Graphics.hpp>
 #endif // GRAPHIC
 
@@ -26,14 +25,14 @@ typedef struct{
     int id;
     struct
     {
-        int x;
-        int y;      
+        float x;
+        float y;      
         float yaw;  
     } goalPose;
     struct
     {
-        int x;
-        int y;        
+        float x;
+        float y;        
     } startPose;
     char processing;
 } PathOrders;
@@ -62,10 +61,10 @@ extern rbqt_pathfinder::AstarState pathfinderState;
 extern int lastIdReceived;
 extern std::vector<GridPath> &StaticTab;
 
-void defineOrigin(geometry_msgs::PoseStamped &origin, int xorigin, int yorigin);
+void defineOrigin(geometry_msgs::PoseStamped &origin, float xorigin, float yorigin);
 
-geometry_msgs::PoseStamped calculPoint (float xgrille,
-                                        float ygrille,
+geometry_msgs::PoseStamped calculPoint (int xgrille,
+                                        int ygrille,
                                         geometry_msgs::PoseStamped origin,
                                         float OffsetGrid);
 
@@ -77,13 +76,13 @@ void initAstarPath (std::vector<rbqt_pathfinder::AstarPath> &AstarTab,
                     tabGridPath &StaticTab);
 
 void getPathFromStartPoint (rbqt_pathfinder::AstarPath tab,
-                            int xdepart, 
-                            int ydepart,
+                            float xdepart, 
+                            float ydepart,
                             std::vector<rbqt_pathfinder::AstarPath> &tabResult);
 
 void getPathFromEndPoint   (std::vector<rbqt_pathfinder::AstarPath> tabResult,
-                            int xarrivee,
-                            int yarrivee,
+                            float xarrivee,
+                            float yarrivee,
                             rbqt_pathfinder::AstarPath &Path);
 
 bool generatePath_callback (rbqt_pathfinder::GeneratePath::Request  &req,

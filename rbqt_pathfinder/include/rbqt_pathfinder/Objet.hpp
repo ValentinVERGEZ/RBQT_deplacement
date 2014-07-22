@@ -11,14 +11,14 @@ enum typeObjet{MACHINE,ROBOTINO,DELIVERY,RECYCLING};
 class Objet
 {
 public:
-	Objet(typeObjet type, signed int x, signed int y);
-	Objet(typeObjet type, signed int x, signed int y,int phi);
+	Objet(typeObjet type, float x, float y);
+	Objet(typeObjet type, float x, float y,int phi);
 	~Objet();
-	int setPosition(signed int x, signed int y);
-	int setPosition(signed int x, signed int y, int phi);
+	int setPosition(float x, float y);
+	int setPosition(float x, float y, int phi);
 	int setType(typeObjet type);
-	signed int getX() const;
-	signed int getY() const;
+	float getX() const;
+	float getY() const;
 	int getPhi() const;
 #ifdef GRAPHIC
 	int constuctShape();
@@ -27,8 +27,8 @@ public:
 
 private:
 	// Position de l'objet
-	signed int _x;
-	signed int _y;
+	float _x;
+	float _y;
 	int _phi;	
 
 	// Type

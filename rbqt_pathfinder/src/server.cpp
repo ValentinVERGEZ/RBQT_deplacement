@@ -3,7 +3,7 @@
 
 
 /*==========  Global variables  ==========*/
-PathOrders pathReq = {-1,{0,0,0.0},{0,0},false};
+PathOrders pathReq = {-1,{0.0,0.0,0.0},{0.0,0},false};
 rbqt_pathfinder::AstarPath pathFound;
 rbqt_pathfinder::AstarState pathfinderState;
 int lastIdReceived = -1;
@@ -13,7 +13,6 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, "server");
     ros::NodeHandle n;
-
 
     pathfinderState.state = pathfinderState.LIBRE;
     pathfinderState.id = lastIdReceived;
@@ -106,7 +105,7 @@ void computeAStar_thread_function()
             mapRobocup.getNearestPoint(pathReq.goalPose.x,pathReq.goalPose.y,endPoint);
             mapRobocup.getNearestPoint(pathReq.startPose.x,pathReq.startPose.y,startPoint);
 
-            ROS_INFO("computeAStar with : Start - x %d | y %d  /  End - x %d | y %d",startPoint->getX(),startPoint->getY(),endPoint->getX(),endPoint->getY());
+            ROS_INFO("computeAStar with : Start - x %f | y %f  /  End - x %f | y %f",startPoint->getX(),startPoint->getY(),endPoint->getX(),endPoint->getY());
 
             pathFound.id = actualOrders.id;
             pathFound.path.poses.erase(pathFound.path.poses.begin(),pathFound.path.poses.end());

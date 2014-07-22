@@ -1,6 +1,6 @@
 #include "rbqt_pathfinder/server_static_utils.h"
 
-PathOrders pathReq = {-1,{0,0,0.0},{0,0},false};
+PathOrders pathReq = {-1,{0.0,0.0,0.0},{0.0,0.0},false};
 rbqt_pathfinder::AstarPath  pathFound;
 rbqt_pathfinder::AstarState pathfinderState;
 int lastIdReceived = -1;

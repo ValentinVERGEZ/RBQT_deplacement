@@ -31,11 +31,15 @@ rosbuild_gensrv()
 
 rosbuild_add_boost_directories()
 
-#rosbuild_add_executable(server  src/server.cpp src/Map.cpp src/Point.cpp src/Objet.cpp)
+# rosbuild_add_executable(server  
+#     src/server.cpp 
+#     src/Map.cpp 
+#     src/Point.cpp 
+#     src/Objet.cpp)
 
-rosbuild_add_executable(server_static  	src/server_static.cpp
-                                		src/server_static_utils.cpp)
+# rosbuild_link_boost(server thread)
 
-#rosbuild_link_boost(server thread)
+rosbuild_add_executable(server_static   src/server_static.cpp
+                                        src/server_static_utils.cpp)
 
 rosbuild_link_boost(server_static thread)

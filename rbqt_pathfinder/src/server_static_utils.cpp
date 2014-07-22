@@ -4,21 +4,21 @@ geometry_msgs::PoseStamped &origin;
 
 std::vector<rbqt_pathfinder::AstarPath> &AstarTab;
 
-void defineOrigin(geometry_msgs::PoseStamped &origin, int xorigin, int yorigin)
+void defineOrigin(geometry_msgs::PoseStamped &origin, float xorigin, float yorigin)
 {
     origin.pose.position.x = xorigin;
     origin.pose.position.y = yorigin;
 }
 
-geometry_msgs::PoseStamped calculPoint (float xgrille,
-                                        float ygrille,
+geometry_msgs::PoseStamped calculPoint (int xgrille,
+                                        int ygrille,
                                         geometry_msgs::PoseStamped origin,
                                         float offset)
 {
     geometry_msgs::PoseStamped P;
     
-    P.pose.position.x = xgrille*offset + origin.pose.position.x;
-    P.pose.position.y = ygrille*offset + origin.pose.position.y;
+    P.pose.position.x = (float)xgrille*offset + origin.pose.position.x;
+    P.pose.position.y = (float)ygrille*offset + origin.pose.position.y;
     
     return P;
 }
@@ -172,8 +172,8 @@ void initAstarPath (std::vector<rbqt_pathfinder::AstarPath> &AstarTab,
     
         for (int j = 0; j < StaticTab[i].size(); j++)
         {
-            geometry_msgs::PoseStamped P = calculPoint( (float)StaticTab[i][j].x,
-                                                        (float)StaticTab[i][j].y,
+            geometry_msgs::PoseStamped P = calculPoint( StaticTab[i][j].x,
+                                                        StaticTab[i][j].y,
                                                         origin,
                                                         (float)OFFSET_GRID);
             //type de la forme(int&, int&, geometry_msgs::PoseStamped&, double)
@@ -187,8 +187,8 @@ void initAstarPath (std::vector<rbqt_pathfinder::AstarPath> &AstarTab,
 }
 
 void getPathFromStartPoint (std::vector<rbqt_pathfinder::AstarPath> tab,
-                            int xdepart, 
-                            int ydepart,
+                            float xdepart, 
+                            float ydepart,
                             std::vector<rbqt_pathfinder::AstarPath> &tabResult)
 {
     for (int i = 0; i < tab.size(); i++)
@@ -202,8 +202,8 @@ void getPathFromStartPoint (std::vector<rbqt_pathfinder::AstarPath> tab,
 }
 
 void getPathFromEndPoint   (std::vector<rbqt_pathfinder::AstarPath> tabResult,
-                            int xarrivee,
-                            int yarrivee,
+                            float xarrivee,
+                            float yarrivee,
                             rbqt_pathfinder::AstarPath &pathFound)
 {
     for (int i = 0; i < tabResult.size(); i++)

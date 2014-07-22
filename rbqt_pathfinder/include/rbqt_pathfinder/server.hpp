@@ -32,14 +32,14 @@ typedef struct{
     int id;
     struct
     {
-        int x;
-        int y;      
+        float x;
+        float y;      
         float yaw;  
     } goalPose;
     struct
     {
-        int x;
-        int y;        
+        float x;
+        float y;        
     } startPose;
     char processing;
 } PathOrders;

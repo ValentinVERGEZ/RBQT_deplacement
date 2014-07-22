@@ -14,13 +14,13 @@ enum typePoint{LIBRE=1,OCCUPE_AMI,OCCUPE_ADVERSAIRE,INTERDIT};
 class Point
 {
 public:
-	Point(signed int x, signed int y, typePoint type = LIBRE);
-	Point(signed int x, signed int y, signed int ligne, signed int colonne, typePoint type = LIBRE);
+	Point(float x, float y, typePoint type = LIBRE);
+	Point(float x, float y, signed int ligne, signed int colonne, typePoint type = LIBRE);
 	~Point();
-	int setPosition(signed int x, signed int y);
+	int setPosition(float x, float y);
 	int setType(typePoint type);
-	signed int getX() const;
-	signed int getY() const;
+	float getX() const;
+	float getY() const;
 	typePoint getType() const;
 	// AStar
 	int setPointPrec(Point *pointPrecedent);
@@ -46,8 +46,8 @@ public:
 
 private:
 	// Position du point
-	signed int _x;
-	signed int _y;
+	float _x;
+	float _y;
 	signed int _ligne;
 	signed int _colonne;
 
