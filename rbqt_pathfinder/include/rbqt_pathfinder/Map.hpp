@@ -3,6 +3,7 @@
 
 #include "Point.hpp"
 #include "Objet.hpp"
+#include "ros/ros.h"
 #include <set>
 #include <vector>
 #include <cmath>

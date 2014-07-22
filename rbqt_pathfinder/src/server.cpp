@@ -126,23 +126,35 @@ void computeAStar_thread_function()
                 pathReq.startPose.y,
                 startPoint);
 
-            ROS_INFO("computeAStar with : Start - x %f | y %f  /  End - x %f | y %f",startPoint->getX(),startPoint->getY(),endPoint->getX(),endPoint->getY());
+            //ROS_INFO("computeAStar with : Start - x %f | y %f  /  End - x %f | y %f",startPoint->getX(),startPoint->getY(),endPoint->getX(),endPoint->getY());
 
             pathFound.id = actualOrders.id;
             pathFound.path.poses.erase(
                 pathFound.path.poses.begin(),
                 pathFound.path.poses.end());
 
+            ros::Time startTime = ros::Time::now();
+
             mapRobocup.computeAStar(
                 chemin,
                 startPoint,
                 endPoint);
 
+            long long int timeElapsed = ros::Time::now().toNSec() - startTime.toNSec();
+
+            ROS_INFO("time elapsed = %lld", timeElapsed);
+
             pathfinderState.id = actualOrders.id;
 
-            if(chemin.front() == startPoint && chemin.back() == endPoint)
+            ROS_INFO("ID stored");
+
+            if( chemin.size() != 0 &&
+                chemin.front() == startPoint &&
+                chemin.back() == endPoint)
             {
                 std::size_t i;
+
+                ROS_INFO("enter in if condition");
 
                 for(i=0;i<chemin.size()-1;++i) {
                     geometry_msgs::PoseStamped point;
@@ -160,13 +172,17 @@ void computeAStar_thread_function()
                 pathfinderState.state = pathfinderState.SUCCES;
             }
             else
-                pathfinderState.state = pathfinderState.ECHEC;
+            {
+                ROS_INFO("enter in else");
 
-            ROS_INFO("%p == %p && %p == %p",
+                pathfinderState.state = pathfinderState.ECHEC;
+            }
+
+            /*ROS_INFO("%p == %p && %p == %p",
                 chemin.front(),
                 startPoint,
                 chemin.back(),
-                endPoint);
+                endPoint);*/
 
             pathReq.processing = false;
         }

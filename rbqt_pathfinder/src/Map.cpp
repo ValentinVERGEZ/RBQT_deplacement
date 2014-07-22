@@ -2,8 +2,8 @@
 
 	Map::Map()
 	{		
-		std::cout << "Objet Map, instanciation" << std::endl;		
-		std::cout << "Machines ..." << std::endl;
+		ROS_INFO("Objet Map, instanciation");	
+
 		// Création des machines 
 		_production_machine[0] = new Objet(MACHINE,(float)56/100,(float)168/100,-90);
 		_production_machine[1] = new Objet(MACHINE,(float)56/100,(float)280/100,90);
@@ -39,16 +39,12 @@
 
 		_recycling_machine[0] = new Objet(RECYCLING,(float)56/100,(float)504/100,0);
 		_recycling_machine[1] = new Objet(RECYCLING,(float)-56/100,(float)504/100,180);
-		std::cout << "DONE" << std::endl;
 
-
-		std::cout << "Point ..." << std::endl;
 		//Création des points
 		for (int i = 0; i < nbPointsLignes; ++i)
 		{
 			for (int j = 0; j < nbPointsColonnes; ++j)
 			{
-				std::cout << "Point x : " << i << " y : " << j << std::endl;
 				_pointsPassage[i][j] = new Point(-5.04+j*0.56,0.56+i*0.56,i,j);
 			}
 		}				
@@ -81,14 +77,13 @@
 		_pointsPassage[8][14]->setType(INTERDIT);
 		_pointsPassage[8][16]->setType(INTERDIT);
 		_pointsPassage[8][18]->setType(INTERDIT);
-		std::cout << "DONE" << std::endl;
 
 		_allowDiagonal 		= true;
 		_crossCorner 		= false;
 		_heuristicFonction  = MANHATTAN;
 		_poidsHeuristic 	= 1;
 
-		std::cout << "Objet Map correctement instancié" << std::endl;
+		ROS_INFO("Objet Map correctement instanciee");
 	}
 
 	Map::~Map()
@@ -306,28 +301,12 @@
 			p->_shape->setFillColor(sf::Color::Blue);
 			#endif
 
-			std::cout << "A Evaluer Contains:";
-			for (std::multiset<Point*>::iterator it=aEvaluer.begin();
-				 it!=aEvaluer.end();
-				 ++it )
-			{
-				std::cout << ' ' << (*it)->getF();
-			}
-
-			std::cout << '\n';
-
-
-        	std::cout << "Point evalue: " << p->getLigne() << "," << p->getColonne()
-        			  << " f :" << p->getF()
-        			  << " g :" << p->getG()
-        			  << " h :" << p->getH()
-        			  << std::endl;
-
 			if(p == endPoint)
 			{
-				std::cout << "Arrive au point terminal !" << std::endl;
+				ROS_INFO("Arrive au point terminal !");
 
 				Point* prec;
+
 				do
 				{
 					#ifdef GRAPHIC
@@ -337,8 +316,7 @@
 					chemin.push_back(p);
 					p->getPointPrec(prec);
 					p = prec;
-				}
-				while(prec != NULL);
+				}while(prec != NULL);
 
 				std::reverse(chemin.begin(),chemin.end());
 
@@ -348,15 +326,13 @@
 			dejaEvalue.insert(p);
 			aEvaluer.erase(p);
 			getVoisins(voisins,p);
-			std::cout << "Size voisins : " << voisins.size() << std::endl;
+
 			for (i = 0; i < voisins.size(); i++)
 			{
 				if(dejaEvalue.count(voisins[i]) > 0 && voisins[i])
 				{
 					continue;
 				}
-
-				std::cout << "Voisin " << i << std::endl;
 
 				signed int newG = p->getG() + voisins[i]->distWith(*p);
 
@@ -368,13 +344,6 @@
 					voisins[i]->setF(voisins[i]->getG()+_poidsHeuristic*voisins[i]->getH());
 					
 					aEvaluer.insert(voisins[i]);
-
-        			std::cout << "\tNouveau Voisin : "  << voisins[i]->getLigne()
-        												<< "," << voisins[i]->getColonne()
-        												<< " f :" << voisins[i]->getF()
-        												<< " g :" << voisins[i]->getG()
-        												<< " h :" << voisins[i]->getH()
-        												<< std::endl;
 				}
 			}
 		}
