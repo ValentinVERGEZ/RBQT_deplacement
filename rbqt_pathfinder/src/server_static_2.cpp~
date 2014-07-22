@@ -1,0 +1,206 @@
+#include <vector>
+
+#define OFFSET_GRID 0.5
+
+typedef struct GridPoint
+{
+    GridPoint(int a, int b)
+    {
+        x = a;
+        y = b;
+    }
+    
+    int x;
+    int y;
+} GridPoint;
+
+void defineOrigin(geometry_msgs::PoseStamped &origin)
+{
+    origin.pose.position.x = 0.0;
+    origin.pose.position.y = 1.0;
+}
+
+geometry_msgs::PoseStamped calculPoint(float xgrille, float ygrille, geometry_msgs::PoseStamped origin, float OffsetGrid)
+{
+    PoseStamped P;
+    
+    P.pose.x = xgrille*OffsetGrid + origin.pose.position.x;
+    P.pose.y = ygrille*OffsetGrid + origin.pose.position.y;
+    
+    return P;
+}
+
+std::vector<GridPoint> GridPath;
+
+std::vector<GridPath> tabGridPath;
+
+void inverserChemin(GridPath &Chemin)
+{
+    for (int i = 0; i < Chemin.size(); i++)
+    {
+        Chemin[i].x = -Chemin[i].x;
+    }
+}
+
+void initGridPath(std::vector<GridPath> &tab)
+{
+    GridPath Chemin1;
+    
+    Chemin1.push_back(GridPoint(5, 0));
+    Chemin1.push_back(GridPoint(4, 0));
+    Chemin1.push_back(GridPoint(3, 0));
+    Chemin1.push_back(GridPoint(2, 1));
+    Chemin1.push_back(GridPoint(2, 2));
+    Chemin1.push_back(GridPoint(2, 3));
+    Chemin1.push_back(GridPoint(1, 3));
+    
+    GridPath Chemin2;
+    
+    Chemin2.push_back(GridPoint(1, 3));
+    
+    GridPath Chemin3;
+    
+    Chemin3.push_back(GridPoint(1, 3));
+    Chemin3.push_back(GridPoint(2, 3));
+    Chemin3.push_back(GridPoint(3, 3));
+    
+    GridPath Chemin4;
+    
+    Chemin4.push_back(GridPoint(3, 3))
+
+    GridPath Chemin5;
+    
+    Chemin5.push_back(GridPoint(3, 3));
+    Chemin5.push_back(GridPoint(2, 3));
+    Chemin5.push_back(GridPoint(2, 4));
+    Chemin5.push_back(GridPoint(2, 5));
+    Chemin5.push_back(GridPoint(3, 5));
+    
+    GridPath Chemin6;
+    
+    Chemin6.push_back(GridPoint(7, 0));
+    Chemin6.push_back(GridPoint(6, 1));
+    Chemin6.push_back(GridPoint(6, 2));
+    Chemin6.push_back(GridPoint(6, 3));
+    Chemin6.push_back(GridPoint(7, 3));
+    
+    GridPath Chemin7;
+    
+    Chemin7.push_back(GridPoint(7, 3));
+    Chemin7.push_back(GridPoint(6, 3));
+    Chemin7.push_back(GridPoint(5, 3));
+    
+    GridPath Chemin8;
+    
+    Chemin8.push_back(GridPoint(5, 3));
+    Chemin8.push_back(GridPoint(5, 4));
+    Chemin8.push_back(GridPoint(5, 5));
+    
+    GridPath Chemin9;
+    
+    Chemin9.push_back(GridPoint(7, 3));
+    Chemin9.push_back(GridPoint(6, 3));
+    Chemin9.push_back(GridPoint(5, 3));
+    
+    GridPath Chemin10;
+    
+    Chemin10.push_back(GridPoint(9, 0));
+    Chemin10.push_back(GridPoint(8, 1));
+    Chemin10.push_back(GridPoint(8, 2));
+    Chemin10.push_back(GridPoint(8, 3));
+    Chemin10.push_back(GridPoint(8, 4));
+    Chemin10.push_back(GridPoint(8, 5));
+    Chemin10.push_back(GridPoint(8, 6));
+    Chemin10.push_back(GridPoint(9, 7));
+    
+    GridPath Chemin11;
+    
+    Chemin11.push_back(GridPoint(9, 7));
+    Chemin11.push_back(GridPoint(8, 7));
+    Chemin11.push_back(GridPoint(7, 7));
+    
+    GridPath Chemin12;
+    
+    Chemin12.push_back(GridPoint(7, 7));
+    Chemin12.push_back(GridPoint(6, 7));
+    Chemin12.push_back(GridPoint(5, 7));
+    
+    StaticTab.push_back(Chemin1);
+    inverserChemin(Chemin1);
+    StaticTab.push_back(Chemin1);
+    
+    StaticTab.push_back(Chemin2);
+    inverserChemin(Chemin2);
+    StaticTab.push_back(Chemin2);
+    
+    StaticTab.push_back(Chemin3);
+    inverserChemin(Chemin3);
+    StaticTab.push_back(Chemin3);
+    
+    StaticTab.push_back(Chemin4);
+    inverserChemin(Chemin4);
+    StaticTab.push_back(Chemin4);
+    offsetGrid
+    StaticTab.push_back(Chemin5);
+    inverserChemin(Chemin5);
+    StaticTab.push_back(Chemin5);
+    
+    StaticTab.push_back(Chemin6);
+    inverserChemin(Chemin6);
+    StaticTab.push_back(Chemin6);
+    
+    StaticTab.push_back(Chemin7);
+    inverserChemin(Chemin7);
+    StaticTab.push_back(Chemin7);
+    
+    StaticTab.push_back(Chemin8);
+    inverserChemin(Chemin8);
+    StaticTab.push_back(Chemin8);
+    
+    StaticTab.push_back(Chemin9);
+    inverserChemin(Chemin9);
+    StaticTab.push_back(Chemin9);
+    
+    StaticTab.push_back(Chemin10);
+    inverserChemin(Chemin10);
+    StaticTab.push_back(Chemin10);
+    
+    StaticTab.push_back(Chemin11);
+    inverserChemin(Chemin11);
+    StaticTab.push_back(Chemin11);
+    
+    StaticTab.push_back(Chemin12);
+    inverserChemin(Chemin12);
+    StaticTab.push_back(Chemin12);
+}
+
+std::vector<rbqt_pathfinder::AstarPath> pathVector;
+
+void initAstarPath (std::vector<rbqt_pathfinder::AstarPath> &AstarTab,
+                    std::vector<GridPath> &StaticTab)
+{      
+    for (int i = 0; i < StaticTab.size(); i++)
+    {
+        rbqt_pathfinder::AstarPath Path;
+    
+        for (int j = 0; j < StaticTab[i].size(); j++)
+        {
+            PoseStamped P = calculPoint(StaticTab[i][j].x, StaticTab[i][j].y, origin, OFFSET_GRID);
+            Path.push_back(P);
+        }
+        
+        AstarTab.push_back(Path);
+    }
+}
+
+void getPathFromStartPoint(rbqt_pathfinder::AstarPath tab, int xdepart, int ydepart, std::vector<rbqt_pathfinder::AstarPath> &tabResult)
+{
+    tabResult = 
+}
+
+void getPathFromEndPoint(std::vector<rbqt_pathfinder::AstarPath> tabResult, int xarrivee, int yarrivee, rbqt_pathfinder::AstarPath &Path)
+{
+    
+}
+
+pathFound = Path

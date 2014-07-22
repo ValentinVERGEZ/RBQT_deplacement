@@ -46,9 +46,9 @@ bool generatePath_callback(rbqt_pathfinder::GeneratePath::Request  &req,
     ROS_INFO("GeneratePath request - ID : %d", req.id);
     if(!req.utilisePositionOdometry)
     {
-        ROS_INFO("Pose Depart (Utilisation du parametre) : \n
-                  X: %f |
-                  Y : %f |
+        ROS_INFO("Pose Depart (Utilisation du parametre) : \n\
+                  X: %f |\
+                  Y : %f |\
                   Theta : %f",
                   req.Depart.position.x,
                   req.Depart.position.y,
@@ -58,9 +58,9 @@ bool generatePath_callback(rbqt_pathfinder::GeneratePath::Request  &req,
     {
         ROS_INFO("Pose Depart (Utilisation de l'odometrie): \nX: %f | Y : %f | Theta : %f",0.0,0.0,0.0);
     }
-    ROS_INFO("Pose Arrivee :\n
-              X: %f |
-              Y : %f |
+    ROS_INFO("Pose Arrivee :\n\
+              X: %f |\
+              Y : %f |\
               Theta : %f",
               req.Arrivee.position.x,
               req.Arrivee.position.y,
@@ -174,49 +174,3 @@ void computeAStar_thread_function()
         boost::this_thread::sleep(sleep_time);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-// int main()
-// {
-
-//     //Environment
-//     Map mapRobocup;
-//     Point *startPoint,*endPoint;
-//     std::vector<Point*> chemin;
-
-//     // Algo
-//     while (1)
-//     {
-//         unsigned int sLi,sCol,eLi,eCol;
-//         std::cout << "Veuillez indiquer les lignes et colonnes pour le point start et le point end : " << std::endl;
-//         std::cin >> sLi;
-//         std::cin >> sCol;
-//         std::cin >> eLi;
-//         std::cin >> eCol;
-//         mapRobocup.getPointAt(sLi,sCol,startPoint);
-//         mapRobocup.getPointAt(eLi,eCol,endPoint);
-//         mapRobocup.computeAStar(chemin,startPoint,endPoint);
-
-//         std::cout << "Taille du chemin trouvé : " << chemin.size() << std::endl;
-
-//         std::cout << "Depart : " << startPoint->getLigne() << "," << startPoint->getColonne() << std::endl;
-//         for (unsigned int i = 0; i < chemin.size(); ++i)
-//         {
-//             std::cout << "\tPoint : " << chemin[i]->getLigne() << "," << chemin[i]->getColonne() << " f :" << chemin[i]->getF()  << " g :" << chemin[i]->getG()  << " h :" << chemin[i]->getH() << std::endl;
-//         }
-//         std::cout << "Arrivee : " << endPoint->getLigne() << "," << endPoint->getColonne() << std::endl;        
-//     }
-
-
-//     return 0;
-// }
-

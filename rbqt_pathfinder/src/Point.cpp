@@ -82,32 +82,32 @@
 		return 0;
 	}
 
-	signed int Point::getH() const
+	float Point::getH() const
 	{
 		return _h;
 	}
 
-	signed int Point::getG() const
+	float Point::getG() const
 	{
 		return _g;
 	}
 
-	signed int Point::getF() const
+	float Point::getF() const
 	{
 		return _f;
 	}
 
-	void Point::setH(signed int h)
+	void Point::setH(float h)
 	{
 		_h = h;
 	}
 
-	void Point::setG(signed int g)
+	void Point::setG(float g)
 	{
  		_g = g;
 	}
 
-	void Point::setF(signed int f)
+	void Point::setF(float f)
 	{
 		_f = f;
 	}
@@ -137,10 +137,10 @@
 		return (_type == LIBRE);
 	}
 
-	signed int Point::distWith(Point const& pointDistant) const
+	float Point::distWith(Point const& pointDistant) const
 	{
-		signed int dist  = 0;
-		signed int distX = 0, distY = 0;
+		float dist  = 0;
+		float distX = 0, distY = 0;
 
 		distX = fabs(pointDistant.getX() - getX());
 		distY = fabs(pointDistant.getY() - getY());
