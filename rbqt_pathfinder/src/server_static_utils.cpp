@@ -1,6 +1,6 @@
 #include "rbqt_pathfinder/server_static_utils.h"
 
-geometry_msgs::PoseStamped &origin;
+geometry_msgs::PoseStamped origin;
 
 std::vector<rbqt_pathfinder::AstarPath> &AstarTab;
 

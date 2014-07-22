@@ -1,7 +1,7 @@
 #include "rbqt_pathfinder/Objet.hpp"
 
 
-	Objet::Objet(typeObjet type, signed int x, signed int y)
+	Objet::Objet(typeObjet type, float x, float y)
 	{
 		setType(type);
 		setPosition(x, y);
@@ -11,7 +11,7 @@
 	#endif
 	}
 
-	Objet::Objet(typeObjet type, signed int x, signed int y, int phi)
+	Objet::Objet(typeObjet type, float x, float y, int phi)
 	{
 		setType(type);
 		setPosition(x, y, phi);
@@ -24,7 +24,7 @@
 	{
 	}
 
-	int Objet::setPosition(signed int x, signed int y)
+	int Objet::setPosition(float x, float y)
 	{
 		_x = x;
 		_y = y;
@@ -32,7 +32,7 @@
 		return 0;
 	}
 
-	int Objet::setPosition(signed int x, signed int y, int phi)
+	int Objet::setPosition(float x, float y, int phi)
 	{	
 		setPosition(x, y);
 		_phi = (phi%360);
@@ -51,12 +51,12 @@
 		return 0;
 	}
 
-	signed int Objet::getX() const
+	float Objet::getX() const
 	{
 		return _x;
 	}
 
-	signed int Objet::getY() const
+	float Objet::getY() const
 	{
 		return _y;
 	}
@@ -77,7 +77,7 @@
 		        _shape->setFillColor(sf::Color::White);
 		        _shape->setOutlineThickness(-2);
 		        _shape->setOutlineColor(sf::Color::Black);
-		        _shape->setPosition((int)(562.5-_x)-25, 38+_y-25);
+		        _shape->setPosition((int)(562.5-_x*100)-25, 38+_y*100-25);
 		        _shape->setRotation(0);
 			break;
 
@@ -86,7 +86,7 @@
 		        _shape->setFillColor(sf::Color::White);
 		        _shape->setOutlineThickness(-2);
 		        _shape->setOutlineColor(sf::Color::Green);
-		        _shape->setPosition((int)(562.5-_x)-25, 38+_y-25);
+		        _shape->setPosition((int)(562.5-_x*100)-25, 38+_y*100-25);
 		        _shape->setRotation(0);
 			break;
 
@@ -95,7 +95,7 @@
 		        _shape->setFillColor(sf::Color::Green);
 		        _shape->setOutlineThickness(-2);
 		        _shape->setOutlineColor(sf::Color::Black);
-		        _shape->setPosition((int)(562.5-_x)-25, 38+_y-25);
+		        _shape->setPosition((int)(562.5-_x*100)-25, 38+_y*100-25);
 		        _shape->setRotation(0);
 			break;
 

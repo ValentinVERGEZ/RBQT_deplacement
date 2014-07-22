@@ -53,7 +53,7 @@ typedef std::vector<GridPoint> GridPath;
 
 typedef std::vector<GridPath> tabGridPath;
 
-extern geometry_msgs::PoseStamped &origin;
+extern geometry_msgs::PoseStamped origin;
 extern std::vector<rbqt_pathfinder::AstarPath> &AstarTab;
 extern PathOrders pathReq;
 extern rbqt_pathfinder::AstarPath  pathFound;

@@ -1,7 +1,7 @@
 #include "rbqt_pathfinder/Point.hpp"
 
 
-	Point::Point(signed int x, signed int y, typePoint type)
+	Point::Point(float x, float y, typePoint type)
 	{
 		setPosition(x,y);
 		setType(type);
@@ -16,7 +16,7 @@
 		setColonne(-1);
 	}
 
-	Point::Point(signed int x, signed int y, signed int ligne, signed int colonne, typePoint type)
+	Point::Point(float x, float y, signed int ligne, signed int colonne, typePoint type)
 	{
 		//Point(x,y,ligne,colonne,type);
 		setPosition(x,y);
@@ -36,7 +36,7 @@
 	{
 	}
 
-	int Point::setPosition(signed int x, signed int y)
+	int Point::setPosition(float x, float y)
 	{
 		_x = x;
 		_y = y;
@@ -51,12 +51,12 @@
 		return 0;
 	}
 
-	signed int Point::getX() const
+	float Point::getX() const
 	{
 		return _x;
 	}
 
-	signed int Point::getY() const
+	float Point::getY() const
 	{
 		return _y;
 	}
