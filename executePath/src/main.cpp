@@ -15,6 +15,9 @@
 	float current_y		= 0.0;
 	float current_phi = 0.0;
 
+	// Bumper
+	bool bumperState = false;
+
 	// Infos
 	uint8_t	lastState = executePath::EdCState::LIBRE;
 
@@ -33,6 +36,7 @@ int main(int argc, char** argv)
 	
 	//Souscription aux topics utiles
 	n.subscribe("/odom", 1000, odomCallback);
+	n.subscribe("/bumper", 1000, bumperCallback);
 	n.subscribe("/pathFound", 10, pathfinderCallback);
 	
 	//Création d'un topic d'état EdCState
@@ -76,6 +80,11 @@ void odomCallback(nav_msgs::Odometry odom)
 	current_phi	= tf::getYaw((odom).pose.pose.orientation);
 	
 	//ROS_INFO("I am at this point: [%f, %f] with the angle %f rad (%f deg)", current_x, current_y, current_phi, current_phi*180/PI);
+}
+
+void bumperCallback(std_msgs::Bool bumper)
+{
+	bumperState = bumper.data;
 }
 
 void pathfinderCallback(const rbqt_pathfinder::AstarPath pathFound)
@@ -192,8 +201,8 @@ bool serviceCallback(executePath::command::Request  &req,
 void doneCb(const actionlib_msgs::GoalStatus& state,
             const robotino_local_move::LocalMoveResult& result)
 {
-  ROS_INFO("Finished in state [%s]", state.toString().c_str());
-  ROS_INFO("Answer: %i", result.goal_reached);
+  // ROS_INFO("Finished in state [%s]", state.toString().c_str());
+  // ROS_INFO("Answer: %i", result.goal_reached);
 }
 
 // Called once when the goal becomes active
@@ -205,7 +214,7 @@ void activeCb()
 // Called every time feedback is received for the goal
 void feedbackCb(const robotino_local_move::LocalMoveActionFeedback& feedback)
 {
-  ROS_INFO("Got Feedback of length %lu", feedback.sequence.size());
+  // ROS_INFO("Got Feedback of length %lu", feedback.sequence.size());
 }
 
 // Thread d'execution du chemin
