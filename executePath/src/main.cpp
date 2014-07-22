@@ -367,7 +367,7 @@ void executePath_thread()
 						  current_y,
 						  pathToFollow.path.poses[actualProcessedPose].pose.position.x,
 						  pathToFollow.path.poses[actualProcessedPose].pose.position.y);
-				
+
 				ROS_INFO("Odometry phi:%5.2f --
 						  Goal phi:%5.2f\n_____________________",
 						  current_phi,
@@ -420,8 +420,8 @@ float calculateRotationNeeded(float startX, float startY, float endX, float endY
 
 float calculateForwardDisplacementNeeded(float startX, float startY, float endX, float endY)
 {
-	float dy = abs(startY - endY);
-	float dx = abs(startX - endX);
+	float dy = fabs(startY - endY);
+	float dx = fabs(startX - endX);
 
 	return sqrt(dx*dx+dy*dy) ;
 }
