@@ -23,6 +23,7 @@
     #include "ros/ros.h"
     #include "tf/transform_datatypes.h"
     #include "nav_msgs/Path.h"
+    #include "nav_msgs/Odometry.h"
 
     #include <boost/thread/thread.hpp>
 
@@ -45,8 +46,11 @@ typedef struct{
 } PathOrders;
 
 /*==========  Declarations  ==========*/
+void odomCallback(nav_msgs::Odometry odom);
+
 bool generatePath_callback(rbqt_pathfinder::GeneratePath::Request  &req,
          rbqt_pathfinder::GeneratePath::Response &res);
+
 void computeAStar_thread_function();
 
 #endif // _SERVER_HEADER_

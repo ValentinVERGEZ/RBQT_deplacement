@@ -41,5 +41,5 @@ rosbuild_link_boost(server thread)
 
 rosbuild_add_executable(server_static   src/server_static.cpp
                                         src/server_static_utils.cpp)
-
+                                        
 rosbuild_link_boost(server_static thread)
