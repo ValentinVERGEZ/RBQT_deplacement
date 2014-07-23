@@ -9,10 +9,12 @@ std::vector<GridPath> StaticTab;
 
 int main(int argc, char **argv)
 {
-    defineOrigin(origin, 0.0, 1.0);
+    defineOrigin(origin, 0.0, 0.56);
 
     initGridPath(StaticTab);
     initAstarPath(AstarTab, StaticTab);
+
+    affichageTabPath(AstarTab);
 
     ros::init(argc, argv, "server_static");
     ros::NodeHandle n;

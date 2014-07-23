@@ -4,6 +4,8 @@ geometry_msgs::PoseStamped origin;
 
 std::vector<rbqt_pathfinder::AstarPath> AstarTab;
 
+
+
 void defineOrigin(geometry_msgs::PoseStamped &origin, float xorigin, float yorigin)
 {
     origin.pose.position.x = xorigin;
@@ -21,6 +23,29 @@ geometry_msgs::PoseStamped calculPoint (int xgrille,
     P.pose.position.y = (float)ygrille*offset + origin.pose.position.y;
     
     return P;
+}
+
+void affichageTabPath(std::vector<rbqt_pathfinder::AstarPath> &AstarTab)
+{
+   for (int i = 0; i < AstarTab.size(); i++)
+    { 
+        ROS_INFO("---------------\n\nPATH %d",i);        
+        ROS_INFO("Size %d",AstarTab[i].path.poses.size());
+        affichePath(AstarTab[i]);
+    }
+}
+
+void affichePath(rbqt_pathfinder::AstarPath &p)
+{
+    for (int j = 0; j < p.path.poses.size(); j++)
+    {
+        float x, y;
+
+        x = p.path.poses[j].pose.position.x;
+        y = p.path.poses[j].pose.position.y;
+
+        ROS_INFO("%d | x = %5.4f - y = %5.4f", j, x, y);
+    }    
 }
 
 void inverserChemin(GridPath &Chemin)
@@ -87,9 +112,9 @@ void initGridPath(std::vector<GridPath> &StaticTab)
     
     GridPath Chemin9;
     
-    Chemin9.push_back(GridPoint(7, 3));
-    Chemin9.push_back(GridPoint(6, 3));
-    Chemin9.push_back(GridPoint(5, 3));
+    Chemin9.push_back(GridPoint(5, 5));
+    Chemin9.push_back(GridPoint(6, 5));
+    Chemin9.push_back(GridPoint(7, 5));
     
     GridPath Chemin10;
     
@@ -176,8 +201,6 @@ void initAstarPath (std::vector<rbqt_pathfinder::AstarPath> &AstarTab,
                                                         StaticTab[i][j].y,
                                                         origin,
                                                         (float)OFFSET_GRID);
-            //type de la forme(int&, int&, geometry_msgs::PoseStamped&, double)
-            //pas cohérent avec le prototype du .h(float, float, geometry_msgs::PoseStamped, float)
 
             Path.path.poses.push_back(P);
         }
@@ -193,10 +216,27 @@ void getPathFromStartPoint (std::vector<rbqt_pathfinder::AstarPath> tab,
 {
     for (int i = 0; i < tab.size(); i++)
     {
-        if (tab[i].path.poses.begin()->pose.position.x == xdepart &&
-            tab[i].path.poses.begin()->pose.position.y == ydepart)
+        float dx = abs(tab[i].path.poses.front().pose.position.x - xdepart);
+        float dy = abs(tab[i].path.poses.front().pose.position.y - ydepart);
+    
+        ROS_INFO("\nTest tolerance %i : dist %f | tolerance %f", i,
+                                                                 sqrt(dx*dx+dy*dy),
+                                                                 sqrt(POSE_TOLERANCE*POSE_TOLERANCE));
+
+        ROS_INFO("StartX : %f | StartY : %f", tab[i].path.poses.front().pose.position.x,
+                                              tab[i].path.poses.front().pose.position.y);
+
+        float sign = xdepart * tab[i].path.poses.front().pose.position.x;
+
+        ROS_INFO("signe : %f - %d", sign, sign >=0);
+
+        if( xdepart * tab[i].path.poses.front().pose.position.x >= 0 &&
+            ydepart * tab[i].path.poses.front().pose.position.y >= 0 &&
+            sqrt(dx*dx+dy*dy) <= sqrt(POSE_TOLERANCE*POSE_TOLERANCE))
         {
             tabResult.push_back(tab[i]);
+            ROS_INFO("\n\n---\nStartX : %f | StartY : %f",tab[i].path.poses.front().pose.position.x,
+                                                          tab[i].path.poses.front().pose.position.y);
         }
     }
 }
@@ -208,10 +248,25 @@ void getPathFromEndPoint   (std::vector<rbqt_pathfinder::AstarPath> tabResult,
 {
     for (int i = 0; i < tabResult.size(); i++)
     {
-        if (tabResult[i].path.poses.end()->pose.position.x == xarrivee &&
-            tabResult[i].path.poses.end()->pose.position.y == yarrivee)
+        affichePath(tabResult[i]);
+
+        float dx = abs(tabResult[i].path.poses.back().pose.position.x - xarrivee);
+        float dy = abs(tabResult[i].path.poses.back().pose.position.y - yarrivee);
+
+        float x,y;
+        y = tabResult[i].path.poses.back().pose.position.y;
+        x = tabResult[i].path.poses.back().pose.position.x;
+
+        ROS_INFO("EndX : %f | EndY : %f", x,y);
+        affichePath(tabResult[i]);
+
+        if( xarrivee * tabResult[i].path.poses.back().pose.position.x >= 0 &&
+            yarrivee * tabResult[i].path.poses.back().pose.position.y >= 0 &&
+            sqrt(dx*dx+dy*dy) <= sqrt(POSE_TOLERANCE*POSE_TOLERANCE))
         {
             pathFound = tabResult[i];
+            ROS_INFO("\n\n--------------\nEndX : %f | EndY : %f", tabResult[i].path.poses.back().pose.position.x,
+                                              tabResult[i].path.poses.back().pose.position.y);
         }
     }
 }
@@ -226,6 +281,8 @@ void computeAStar_thread_function()
     {
         if(lastId != pathReq.id)
         {
+            ROS_INFO("ID : %d", pathReq.id);
+
             std::vector<rbqt_pathfinder::AstarPath> tabResult;
 
             pathReq.processing = true;
@@ -236,30 +293,44 @@ void computeAStar_thread_function()
             actualOrders = pathReq;
 
             pathFound.id = actualOrders.id;
+
+            ROS_INFO("avant erase");
+
             pathFound.path.poses.erase(pathFound.path.poses.begin(),pathFound.path.poses.end());
             
+            ROS_INFO("apres erase");
+
             getPathFromStartPoint(AstarTab,
                                   actualOrders.startPose.x,
                                   actualOrders.startPose.y,
                                   tabResult);
+            ROS_INFO("tabResult.size() %d",tabResult.size());
 
             getPathFromEndPoint(tabResult,
                                 actualOrders.goalPose.x,
                                 actualOrders.goalPose.y,
                                 pathFound);
+            ROS_INFO("pathFound.size() %d",pathFound.path.poses.size());
 
             pathfinderState.id = actualOrders.id;
 
+            ROS_INFO("avant if state");
+
             if (pathFound.path.poses.size() > 0)
             {
+                ROS_INFO("if state");
+                pathFound.path.poses.back().pose.orientation = tf::createQuaternionMsgFromYaw(actualOrders.goalPose.yaw);
                 pathfinderState.state = pathfinderState.SUCCES;
             }
             else
             {
+                ROS_INFO("else if state");
                 pathfinderState.state = pathfinderState.ECHEC;
             }
 
             pathfinderState.id = pathFound.id;
+
+            ROS_INFO("fin if");
 
             pathReq.processing = false;
         }
