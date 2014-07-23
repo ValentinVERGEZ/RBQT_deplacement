@@ -226,7 +226,7 @@ void doneCb(const actionlib::SimpleClientGoalState& state,
 		if(actualProcessedPose == pathToFollow.path.poses.size())
 		{
 			actualProcessedPose = 0;
-			servReq.type == Request::NOTHING;
+			servReq.type = Request::NOTHING;
 			firstRotationAlreadyDone = false;
 			goalAlreadySent = false;
 		}
@@ -338,6 +338,10 @@ void executePath_thread()
 						ROS_INFO("Construct new goal - First Rotation %f",actualGoal.rotation);
 					}
 				}
+
+				ROS_INFO("Odometry x:%5.2f | y:%5.2f -- Goal x:%5.2f | y:%5.2f",current_x,current_y,pathToFollow.path.poses[actualProcessedPose].pose.position.x, pathToFollow.path.poses[actualProcessedPose].pose.position.y);
+				ROS_INFO("Odometry phi:%5.2f -- Goal phi:%5.2f\n_____________________",current_phi,actualGoal.rotation+current_phi);
+
 				localMoveClient.sendGoal(actualGoal, &doneCb, &activeCb, &feedbackCb);
 				goalAlreadySent = true;
 				break;
