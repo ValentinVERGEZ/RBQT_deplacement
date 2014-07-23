@@ -11,7 +11,7 @@
 #include "executePath/EdCState.h"
 #include "executePath/command.h"
 
-// #include <actionlib/client/simple_action_client.h>
+#include <actionlib/client/simple_action_client.h>
 #include <tf/transform_datatypes.h>
 #include <std_msgs/Bool.h>
 #include <nav_msgs/Path.h>
@@ -38,20 +38,22 @@ typedef executePath::command::Request Request;
 
 void odomCallback(nav_msgs::Odometry odom);
 void bumperCallback(std_msgs::Bool bumper);
-void pathfinderCallback(const rbqt_pathfinder::AstarPath pathFound);
+void pathfinderCallback(rbqt_pathfinder::AstarPath pathFound);
 bool serviceCallback(executePath::command::Request &req, executePath::command::Response &res);// Called once when the goal completes
-void doneCb(const actionlib_msgs::GoalStatus& state,
-            const robotino_local_move::LocalMoveResult& result);
+void doneCb(const actionlib::SimpleClientGoalState& state,
+            const robotino_local_move::LocalMoveResultConstPtr result);
 // Called once when the goal becomes active
 void activeCb();
 // Called every time feedback is received for the goal
-void feedbackCb(const robotino_local_move::LocalMoveActionFeedback& feedback);
+void feedbackCb(const robotino_local_move::LocalMoveFeedbackConstPtr feedback);
 // Thread d'execution du chemin
-void executePath_thread();
+void executePath_thread();float calculateRotationNeeded(float startX, float startY, float endX, float endY);
+float calculateForwardDisplacementNeeded(float startX, float startY, float endX, float endY);
 
 /*==========  DECLARATIONS - ExecuteruDeChemin.cpp  ==========*/
 
 bool findPath(rbqt_pathfinder::AstarPath &pathFound, std::list<rbqt_pathfinder::AstarPath> listOfPath, int ID);
+bool checkServer(actionlib::SimpleActionClient<robotino_local_move::LocalMoveAction> &client);
 // void send(robotino_local_move::RobotinoLocalMoveClient client, robotino_local_move::LocalMoveGoal goal);
 
 #endif  // _EXECUTEUR_DE_CHEMIN_HEADER_

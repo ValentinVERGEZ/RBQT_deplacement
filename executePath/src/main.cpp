@@ -21,6 +21,11 @@
 	// Infos
 	uint8_t	lastState = executePath::EdCState::LIBRE;
 
+	// Service
+	Request servReq;
+	unsigned int actualProcessedPose = 0;
+	bool firstRotationAlreadyDone = false;
+
 /*============================
 =            Main            =
 ============================*/
@@ -35,14 +40,16 @@ int main(int argc, char** argv)
 	ros::NodeHandle n;
 	
 	//Souscription aux topics utiles
-	n.subscribe("/odom", 1000, odomCallback);
-	n.subscribe("/bumper", 1000, bumperCallback);
-	n.subscribe("/pathFound", 10, pathfinderCallback);
+	ros::Subscriber sub_odo = n.subscribe("/odom", 1000, odomCallback);
+	ros::Subscriber sub_bump = n.subscribe("/bumper", 1000, bumperCallback);
+	ros::Subscriber sub_pathFound = n.subscribe("/pathFound", 1000, pathfinderCallback);
 	
 	//Création d'un topic d'état EdCState
 	ros::Publisher EdCState_pub = n.advertise<executePath::EdCState>("EdCState", 1000);
 	
 	//Création d'un service "command"
+	servReq.type = Request::NOTHING;
+	servReq.ID = -1;
 	ros::ServiceServer service = n.advertiseService("command", &serviceCallback);
 
 	//Init message
@@ -52,7 +59,7 @@ int main(int argc, char** argv)
 	// Thread
 	boost::thread executePath(&executePath_thread);
 
-	ros::Rate loop_rate ( 30 );
+	ros::Rate loop_rate (100);
 	while(n.ok())
 	{
 		// Publish
@@ -87,19 +94,27 @@ void bumperCallback(std_msgs::Bool bumper)
 	bumperState = bumper.data;
 }
 
-void pathfinderCallback(const rbqt_pathfinder::AstarPath pathFound)
+void pathfinderCallback(rbqt_pathfinder::AstarPath pathFound)
 {
-	listOfPath.push_back(pathFound);
+	// ROS_INFO("pathfinderCallback");
+
+	if(listOfPath.size() == 0 || listOfPath.back().id != pathFound.id)
+	{		
+		listOfPath.push_back(pathFound);
+
+		ROS_INFO("New path - id %d",listOfPath.back().id);
 	
-	if(listOfPath.size() > NB_MAX_PATH_SAVED)
-   	{
-   		listOfPath.pop_front();
-   	}
+		if(listOfPath.size() > NB_MAX_PATH_SAVED)
+	   	{
+	   		listOfPath.pop_front();
+	   	}
+	}
 }
 
 bool serviceCallback(executePath::command::Request  &req,
         executePath::command::Response &res)
 {
+	ROS_INFO("Req reçue - ID : %d | Type : %d",req.ID,req.type);
 	switch(req.type)
 	{
 		case executePath::command::Request::EXECUTE_PATH :
@@ -116,7 +131,8 @@ bool serviceCallback(executePath::command::Request  &req,
 					res.accepted = true;
 					lastState = EdCState_msg.state;
 					EdCState_msg.state = executePath::EdCState::IN_PROGRESS;
-					EdCState_msg.ID = ID;
+					EdCState_msg.ID = ID;	
+					servReq = req;
 				}
 				else
 				{
@@ -139,7 +155,8 @@ bool serviceCallback(executePath::command::Request  &req,
 			{
 				res.accepted = true;
 				lastState = EdCState_msg.state;
-				EdCState_msg.state = executePath::EdCState::PAUSED;		
+				EdCState_msg.state = executePath::EdCState::PAUSED;			
+				servReq = req;
 			}
 			else
 			{
@@ -153,7 +170,8 @@ bool serviceCallback(executePath::command::Request  &req,
 			{
 				res.accepted = true;
 				EdCState_msg.state = lastState;	
-				lastState = executePath::EdCState::PAUSED;
+				lastState = executePath::EdCState::PAUSED;	
+				servReq = req;
 			}
 			else
 			{
@@ -170,7 +188,8 @@ bool serviceCallback(executePath::command::Request  &req,
 			{
 				res.accepted = true;
 				lastState = EdCState_msg.state;
-				EdCState_msg.state = executePath::EdCState::LIBRE;		
+				EdCState_msg.state = executePath::EdCState::LIBRE;			
+				servReq = req;
 			}
 			else
 			{
@@ -183,26 +202,35 @@ bool serviceCallback(executePath::command::Request  &req,
 			break;
 	}
 
-	int ID;
-	ID = req.ID;
-
-	if(findPath(pathToFollow, listOfPath, ID))
-	{
-		res.accepted = true;
-	}
-	else
-		res.accepted = false;
-
 	return true;
 }
 
 
 // Called once when the goal completes
-void doneCb(const actionlib_msgs::GoalStatus& state,
-            const robotino_local_move::LocalMoveResult& result)
+void doneCb(const actionlib::SimpleClientGoalState& state,
+            const robotino_local_move::LocalMoveResultConstPtr result)
 {
   // ROS_INFO("Finished in state [%s]", state.toString().c_str());
   // ROS_INFO("Answer: %i", result.goal_reached);
+
+	if(!firstRotationAlreadyDone)
+	{
+		firstRotationAlreadyDone = true;
+	}
+	else
+	{
+		if(actualProcessedPose == pathToFollow.path.poses.size())
+		{
+			actualProcessedPose = 0;
+			servReq.type == Request::NOTHING;
+			firstRotationAlreadyDone = false;
+		}
+		else
+		{
+			actualProcessedPose++;
+			firstRotationAlreadyDone = false;
+		}
+	}
 }
 
 // Called once when the goal becomes active
@@ -212,7 +240,7 @@ void activeCb()
 }
 
 // Called every time feedback is received for the goal
-void feedbackCb(const robotino_local_move::LocalMoveActionFeedback& feedback)
+void feedbackCb(const robotino_local_move::LocalMoveFeedbackConstPtr feedback)
 {
   // ROS_INFO("Got Feedback of length %lu", feedback.sequence.size());
 }
@@ -220,7 +248,128 @@ void feedbackCb(const robotino_local_move::LocalMoveActionFeedback& feedback)
 // Thread d'execution du chemin
 void executePath_thread()
 {
+// Environement
+    boost::posix_time::milliseconds     sleep_time(10);
 
+    actionlib::SimpleActionClient<robotino_local_move::LocalMoveAction> localMoveClient("local_move", false);
+
+    robotino_local_move::LocalMoveGoal actualGoal;
+
+// Algo
+
+	while(1)
+	{		
+
+
+		// if(!checkServer(localMoveClient))
+		// {
+		// 	EdCState_msg.state = executePath::EdCState::PROBLEM;
+  //       	boost::this_thread::sleep(sleep_time);
+		// 	continue;
+		// }
+
+		switch(servReq.type)
+		{
+			case Request::EXECUTE_PATH:
+			
+			// Construct goal
+				// Dernier point - Rotation + Avance avec Rotation (fixee)
+				if(actualProcessedPose == pathToFollow.path.poses.size())
+				{
+					// Avance
+					if(firstRotationAlreadyDone)
+					{		
+						actualGoal.move_x = calculateForwardDisplacementNeeded(current_x, current_y, pathToFollow.path.poses[actualProcessedPose].pose.position.x,pathToFollow.path.poses[actualProcessedPose].pose.position.y);
+						actualGoal.move_y = 0.0;
+						actualGoal.rotation = tf::getYaw(pathToFollow.path.poses[actualProcessedPose].pose.orientation);
+
+					actualGoal.ignore_rotation = false;	
+					}
+					// Rotation
+					else
+					{	
+						actualGoal.move_x = 0.0;
+						actualGoal.move_y = 0.0;
+
+						actualGoal.rotation = calculateRotationNeeded(current_x, current_y, pathToFollow.path.poses[actualProcessedPose].pose.position.x,pathToFollow.path.poses[actualProcessedPose].pose.position.y);
+
+						actualGoal.ignore_rotation = false;
+					}
+				}
+				// Autre point - Rotation + Avance
+				else
+				{
+					// Avance
+					if(firstRotationAlreadyDone)
+					{		
+						actualGoal.move_x = calculateForwardDisplacementNeeded(current_x, current_y, pathToFollow.path.poses[actualProcessedPose].pose.position.x,pathToFollow.path.poses[actualProcessedPose].pose.position.y);
+						actualGoal.move_y = 0.0;
+						actualGoal.rotation = 0.0;
+
+					actualGoal.ignore_rotation = true;	
+					}
+					// Rotation
+					else
+					{	
+						actualGoal.move_x = 0.0;
+						actualGoal.move_y = 0.0;
+
+						actualGoal.rotation = calculateRotationNeeded(current_x, current_y, pathToFollow.path.poses[actualProcessedPose].pose.position.x,pathToFollow.path.poses[actualProcessedPose].pose.position.y);
+
+						actualGoal.ignore_rotation = false;
+					}
+				}
+
+				localMoveClient.sendGoal(actualGoal, &doneCb, &activeCb, &feedbackCb);
+				break;
+
+			case Request::PAUSE:
+				break;
+
+			case Request::RESUME:
+				break;
+				
+			case Request::CANCEL:
+				break;
+
+			case Request::NOTHING:
+			default:
+				break;
+		}
+
+        boost::this_thread::sleep(sleep_time);
+	}	
 }
+
+float calculateRotationNeeded(float startX, float startY, float endX, float endY)
+{
+	float dy = (endY - startY);
+	float dx = (endX - startX);
+
+	float phi = atan(abs(dy/dx));
+
+	if(dx >= 0)
+	{
+		if(dy < 0)
+			phi *= -1;
+	}
+	else
+	{
+		if(dy < 0)
+			phi = -M_PI + phi;
+		else
+			phi = M_PI - phi;
+	}
+	return phi;
+}
+
+float calculateForwardDisplacementNeeded(float startX, float startY, float endX, float endY)
+{
+	float dy = abs(startY - endY);
+	float dx = abs(startX - endX);
+
+	return sqrt(dx*dx+dy*dy) ;
+}
+
 
 /*-----  End of Others Functions  ------*/
