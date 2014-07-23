@@ -1,12 +1,13 @@
 /*==========  Includes  ==========*/
 #include "rbqt_pathfinder/server.hpp"
 
-
 /*==========  Global variables  ==========*/
 PathOrders pathReq = {-1,{0.0,0.0,0.0},{0.0,0},false};
 rbqt_pathfinder::AstarPath  pathFound;
 rbqt_pathfinder::AstarState pathfinderState;
 int lastIdReceived = -1;
+float current_x = 0.0;
+float current_y = 0.0;
 
 /*==========  Main  ==========*/
 int main(int argc, char **argv)
@@ -20,7 +21,11 @@ int main(int argc, char **argv)
 
     ros::Publisher path_pub    = n.advertise<rbqt_pathfinder::AstarPath>("pathFound", 1000);
     ros::Publisher state_pub   = n.advertise<rbqt_pathfinder::AstarState>("pathfinderState", 1000);
+    
+    ros::Subscriber sub_odo    = n.subscribe("/odom", 1000, odomCallback);
+
     ros::ServiceServer service = n.advertiseService("generatePath", generatePath_callback);
+    
     ROS_INFO("Ready to compute A Star pathfinding.");
 
     boost::thread computeAStar_thread(&computeAStar_thread_function);
@@ -40,8 +45,8 @@ int main(int argc, char **argv)
 }
 
 /*==========  Other functions  ==========*/
-bool generatePath_callback(rbqt_pathfinder::GeneratePath::Request  &req,
-         rbqt_pathfinder::GeneratePath::Response &res)
+bool generatePath_callback( rbqt_pathfinder::GeneratePath::Request  &req,
+                            rbqt_pathfinder::GeneratePath::Response &res)
 {
     ROS_INFO("GeneratePath request - ID : %d", req.id);
     if(!req.utilisePositionOdometry)
@@ -86,15 +91,19 @@ bool generatePath_callback(rbqt_pathfinder::GeneratePath::Request  &req,
         }
         else
         {
-            // TODO : USE ODOMETRY
-            pathReq.startPose.x = 0;
-            pathReq.startPose.y = 0;
+            pathReq.startPose.x = current_x;
+            pathReq.startPose.y = current_y;
         }
     }
 
   return true;
 }
 
+void odomCallback(nav_msgs::Odometry odom)
+{
+    current_x       = (odom).pose.pose.position.x;
+    current_y       = (odom).pose.pose.position.x;
+}
 
 void computeAStar_thread_function()
 {
