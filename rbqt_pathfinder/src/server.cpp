@@ -163,8 +163,6 @@ void computeAStar_thread_function()
             {
                 std::size_t i;
 
-                ROS_INFO("enter in if condition");
-
                 for(i=0;i<chemin.size()-1;++i)
                 {
                     geometry_msgs::PoseStamped point;
