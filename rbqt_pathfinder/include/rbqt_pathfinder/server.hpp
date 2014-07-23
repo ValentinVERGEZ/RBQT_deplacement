@@ -48,8 +48,8 @@ typedef struct{
 /*==========  Declarations  ==========*/
 void odomCallback(nav_msgs::Odometry odom);
 
-bool generatePath_callback(rbqt_pathfinder::GeneratePath::Request  &req,
-         rbqt_pathfinder::GeneratePath::Response &res);
+bool generatePath_callback( rbqt_pathfinder::GeneratePath::Request  &req,
+                            rbqt_pathfinder::GeneratePath::Response &res);
 
 void computeAStar_thread_function();
 

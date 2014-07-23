@@ -52,13 +52,22 @@ bool generatePath_callback (rbqt_pathfinder::GeneratePath::Request  &req,
 
     if(!req.utilisePositionOdometry)
     {
-        ROS_INFO("Pose Depart (Utilisation du parametre) : \nX: %f | Y : %f | Theta : %f",req.Depart.position.x,req.Depart.position.y,tf::getYaw(req.Depart.orientation));
+        ROS_INFO("Pose Depart (Utilisation du parametre) : \nX: %f | Y : %f | Theta : %f",
+            req.Depart.position.x,
+            req.Depart.position.y,
+            tf::getYaw(req.Depart.orientation));
     }
     else
     {
-        ROS_INFO("Pose Depart (Utilisation de l'odometrie): \nX: %f | Y : %f | Theta : %f",0.0,0.0,0.0);
+        ROS_INFO("Pose Depart (Utilisation de l'odometrie): \nX: %f | Y : %f | Theta : %f",
+            0.0,
+            0.0,
+            0.0);
     }
-    ROS_INFO("Pose Arrivee : \nX: %f | Y : %f | Theta : %f",req.Arrivee.position.x,req.Arrivee.position.y,tf::getYaw(req.Arrivee.orientation));
+    ROS_INFO("Pose Arrivee : \nX: %f | Y : %f | Theta : %f",
+        req.Arrivee.position.x,
+        req.Arrivee.position.y,
+        tf::getYaw(req.Arrivee.orientation));
 
     if(pathReq.processing == true || req.id == lastIdReceived)
     {
