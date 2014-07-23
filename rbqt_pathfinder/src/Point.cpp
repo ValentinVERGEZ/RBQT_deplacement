@@ -76,7 +76,7 @@
 		return 0;
 	}
 
-	int Point::getPointPrec(Point *&pointPrecedent)
+	int Point::getPointPrec(Point* &pointPrecedent)
 	{
 		pointPrecedent = _pointPrecedent;
 		return 0;

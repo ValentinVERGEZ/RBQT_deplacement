@@ -87,7 +87,26 @@
 	}
 
 	Map::~Map()
-	{
+	{	
+		for (int i = 0; i < nbPointsLignes; ++i)
+		{
+			for (int j = 0; j < nbPointsColonnes; ++j)
+			{
+				delete _pointsPassage[i][j];
+			}
+		}			
+		for (int i = 0; i < nbProductionMachine; ++i)
+		{
+			delete _production_machine[i];
+		}
+		for (int i = 0; i < nbDeliveryMachine; ++i)
+		{
+			delete _delivery_machine[i];
+		}
+		for (int i = 0; i < nbRecyclingMachine; ++i)
+		{
+			delete _recycling_machine[i];
+		}
 	}
 
 	// AStar	
