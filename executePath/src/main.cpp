@@ -219,6 +219,7 @@ void doneCb(const actionlib::SimpleClientGoalState& state,
 	if(!firstRotationAlreadyDone)
 	{
 		firstRotationAlreadyDone = true;
+		goalAlreadySent = false;
 	}
 	else
 	{
