@@ -296,7 +296,7 @@ void executePath_thread()
 					{		
 						actualGoal.move_x = calculateForwardDisplacementNeeded(current_x, current_y, pathToFollow.path.poses[actualProcessedPose].pose.position.x,pathToFollow.path.poses[actualProcessedPose].pose.position.y);
 						actualGoal.move_y = 0.0;
-						actualGoal.rotation = tf::getYaw(pathToFollow.path.poses[actualProcessedPose].pose.orientation);
+						actualGoal.rotation = tf::getYaw(pathToFollow.path.poses[actualProcessedPose].pose.orientation) - current_phi;
 
 						actualGoal.ignore_rotation = false;	
 						ROS_INFO("Construct new goal - (Last Point) Avance %f - Rotation %f",actualGoal.move_x,actualGoal.rotation);
@@ -307,7 +307,7 @@ void executePath_thread()
 						actualGoal.move_x = 0.0;
 						actualGoal.move_y = 0.0;
 
-						actualGoal.rotation = calculateRotationNeeded(current_x, current_y, pathToFollow.path.poses[actualProcessedPose].pose.position.x,pathToFollow.path.poses[actualProcessedPose].pose.position.y);
+						actualGoal.rotation = calculateRotationNeeded(current_x, current_y, pathToFollow.path.poses[actualProcessedPose].pose.position.x,pathToFollow.path.poses[actualProcessedPose].pose.position.y) - current_phi;
 
 						actualGoal.ignore_rotation = false;
 						ROS_INFO("Construct new goal - (Last Point) First Rotation %f",actualGoal.rotation);
@@ -332,13 +332,14 @@ void executePath_thread()
 						actualGoal.move_x = 0.0;
 						actualGoal.move_y = 0.0;
 
-						actualGoal.rotation = calculateRotationNeeded(current_x, current_y, pathToFollow.path.poses[actualProcessedPose].pose.position.x,pathToFollow.path.poses[actualProcessedPose].pose.position.y);
+						actualGoal.rotation = calculateRotationNeeded(current_x, current_y, pathToFollow.path.poses[actualProcessedPose].pose.position.x,pathToFollow.path.poses[actualProcessedPose].pose.position.y) - current_phi;
 
 						actualGoal.ignore_rotation = false;
 						ROS_INFO("Construct new goal - First Rotation %f",actualGoal.rotation);
 					}
 				}
 				localMoveClient.sendGoal(actualGoal, &doneCb, &activeCb, &feedbackCb);
+				goalAlreadySent = true;
 				break;
 
 			case Request::PAUSE:
