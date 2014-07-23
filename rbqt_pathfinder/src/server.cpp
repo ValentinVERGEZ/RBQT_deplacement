@@ -8,6 +8,7 @@ rbqt_pathfinder::AstarState pathfinderState;
 int lastIdReceived = -1;
 float current_x = 0.0;
 float current_y = 0.0;
+bool stop = false;
 
 /*==========  Main  ==========*/
 int main(int argc, char **argv)
@@ -31,7 +32,7 @@ int main(int argc, char **argv)
     boost::thread computeAStar_thread(&computeAStar_thread_function);
 
     ros::Rate loop_rate(10);
-    while (ros::ok())
+    while (ros::ok() && !stop)
     {
         path_pub.publish(pathFound);
         state_pub.publish(pathfinderState);
@@ -115,7 +116,7 @@ void computeAStar_thread_function()
     Point *startPoint,*endPoint;
     std::vector<Point*> chemin;
 
-    while(1)
+    while(1 && !stop)
     {
         if(lastId != pathReq.id)
         {

@@ -34,7 +34,7 @@
 
 int main(int argc, char** argv)
 {
-
+	ROS_INFO("Start noeud executePath");
 	//Initialisation du noeud ROS
 	ros::init(argc, argv, "executeur_de_chemin");
 	
@@ -119,7 +119,7 @@ void pathfinderCallback(rbqt_pathfinder::AstarPath pathFound)
 bool serviceCallback(executePath::command::Request  &req,
         			 executePath::command::Response &res)
 {
-	ROS_INFO("Req reçue - ID : %d | Type : %d", req.ID, req.type);
+	ROS_INFO("Req recue - ID : %d | Type : %d",req.ID,req.type);
 	switch(req.type)
 	{
 		case executePath::command::Request::EXECUTE_PATH :
@@ -218,7 +218,9 @@ void doneCb(const actionlib::SimpleClientGoalState& state,
   // ROS_INFO("Finished in state [%s]", state.toString().c_str());
   // ROS_INFO("Answer: %i", result.goal_reached);
 
-	ROS_INFO("Goal Hit");
+	ROS_INFO("\n\n************\nGoal Hit");
+	ROS_INFO("Odometry x:%5.2f | y:%5.2f -- Goal x:%5.2f | y:%5.2f",current_x,current_y,pathToFollow.path.poses[actualProcessedPose].pose.position.x, pathToFollow.path.poses[actualProcessedPose].pose.position.y);
+	ROS_INFO("Odometry phi:%5.2f",current_phi);
 
 	if(!firstRotationAlreadyDone)
 	{
@@ -233,7 +235,7 @@ void doneCb(const actionlib::SimpleClientGoalState& state,
 			servReq.type 				= Request::NOTHING;
 			firstRotationAlreadyDone 	= false;
 			goalAlreadySent 			= false;
-			EdCState_msg.state   = executePath::EdCState::FINISHED;
+			EdCState_msg.state = executePath::EdCState::FINISHED;
 		}
 		else
 		{
@@ -244,10 +246,7 @@ void doneCb(const actionlib::SimpleClientGoalState& state,
 		goalAlreadySent			 = false;
 	}
 
-	ROS_INFO("firstRotationAlreadyDone(%d)\
-			  actualProcessedPose(%d)\
-			  goalAlreadySent(%d)\
-			  servReq.type(%d)",
+	ROS_INFO("END DONE\nfirstRotationAlreadyDone(%d) actualProcessedPose(%d) goalAlreadySent(%d) servReq.type(%d)",
 			  firstRotationAlreadyDone,
 			  actualProcessedPose,
 			  goalAlreadySent,
@@ -257,7 +256,7 @@ void doneCb(const actionlib::SimpleClientGoalState& state,
 // Called once when the goal becomes active
 void activeCb()
 {
-  ROS_INFO("Goal just went active");
+  ROS_INFO("\nGoal just went active\n");
   goalAlreadySent = true;
 }
 
@@ -302,8 +301,9 @@ void executePath_thread()
 
 			// Construct goal
 				// Dernier point - Rotation + Avance avec Rotation (fixee)
-				if(actualProcessedPose == pathToFollow.path.poses.size())
+				if(actualProcessedPose == pathToFollow.path.poses.size()-1)
 				{
+					ROS_INFO("____________________\nCons Goal\nfirstRotationAlreadyDone(%d) actualProcessedPose(%d) goalAlreadySent(%d) servReq.type(%d)\n",firstRotationAlreadyDone,actualProcessedPose,goalAlreadySent,servReq.type);
 					// Avance
 					if(firstRotationAlreadyDone)
 					{		
@@ -386,6 +386,7 @@ void executePath_thread()
 					}
 				}
 
+				ROS_INFO("Before Send Goal");
 				ROS_INFO("Odometry x:%5.2f | y:%5.2f -- Goal x:%5.2f | y:%5.2f",
 						  current_x,
 						  current_y,
@@ -434,6 +435,7 @@ float calculateForwardDisplacementNeeded(float startX, float startY, float endX,
 	float dy = fabs(startY - endY);
 	float dx = fabs(startX - endX);
 
+	ROS_INFO("CFDN -> start(%f,%f) | end(%f,%f) - dx%f - dy:%f",startX,startY,endX,endY,dx,dy);
 
     ROS_INFO("(%f, %f) - (%f, %f)", startX, startY, endX, endY);
     ROS_INFO("dx : %f , dy : %f, d : %f" , dx, dy, sqrt(dx*dx+dy*dy));

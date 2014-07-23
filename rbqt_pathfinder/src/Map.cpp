@@ -1,6 +1,7 @@
 #include "rbqt_pathfinder/Map.hpp"
 
 	Map::Map()
+	: _clean(true)
 	{		
 		ROS_INFO("Objet Map, instanciation");	
 
@@ -87,7 +88,26 @@
 	}
 
 	Map::~Map()
-	{
+	{	
+		for (int i = 0; i < nbPointsLignes; ++i)
+		{
+			for (int j = 0; j < nbPointsColonnes; ++j)
+			{
+				delete _pointsPassage[i][j];
+			}
+		}			
+		for (int i = 0; i < nbProductionMachine; ++i)
+		{
+			delete _production_machine[i];
+		}
+		for (int i = 0; i < nbDeliveryMachine; ++i)
+		{
+			delete _delivery_machine[i];
+		}
+		for (int i = 0; i < nbRecyclingMachine; ++i)
+		{
+			delete _recycling_machine[i];
+		}
 	}
 
 	// AStar	
@@ -290,6 +310,7 @@
 		#endif
 
 		chemin.clear();
+		reset();
 		std::multiset<Point*,CompareF> aEvaluer;
 		std::multiset<Point*> dejaEvalue;
 		std::vector<Point*> voisins;
@@ -336,9 +357,12 @@
 				ROS_INFO("Arrive au point terminal !");
 
 				Point* prec;
-
+                int count = 0;
 				do
 				{
+					count++;
+		            ROS_INFO("Count = %d", count);
+
 					#ifdef GRAPHIC
 					p->_shape->setFillColor(sf::Color::Green);
 					#endif
@@ -346,7 +370,9 @@
 					chemin.push_back(p);
 					p->getPointPrec(prec);
 					p = prec;
+
 				} while(prec != NULL);
+
 
 				std::reverse(chemin.begin(),chemin.end());
 
@@ -386,6 +412,7 @@
 			}
 		}
 
+		setClean(false);
 		return 0;		
 	}
 
@@ -437,6 +464,33 @@
 		}
 
 		return 0;
+	}
+
+
+	void Map::reset()
+	{
+		if(!getClean())
+		{
+			for (int i = 0; i < nbPointsLignes; ++i)
+			{
+				for (int j = 0; j < nbPointsColonnes; ++j)
+				{
+					_pointsPassage[i][j]->reset();
+				}
+			}		
+
+			setClean(true);	
+		}
+	}
+
+	bool Map::getClean()
+	{
+		return _clean;
+	}
+
+	void Map::setClean(bool c)
+	{
+		_clean = c;
 	}
 
 

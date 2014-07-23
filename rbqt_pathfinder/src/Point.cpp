@@ -76,7 +76,7 @@
 		return 0;
 	}
 
-	int Point::getPointPrec(Point *&pointPrecedent)
+	int Point::getPointPrec(Point* &pointPrecedent)
 	{
 		pointPrecedent = _pointPrecedent;
 		return 0;
@@ -148,6 +148,14 @@
 		dist = std::sqrt(std::pow(distX,2)+std::pow(distY,2));
 
 		return dist;
+	}
+
+	void Point::reset()
+	{
+		setH(0);
+		setG(0);
+		setF(0);
+		setPointPrec(NULL);
 	}
 
 
