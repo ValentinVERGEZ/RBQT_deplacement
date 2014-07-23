@@ -112,6 +112,7 @@ void computeAStar_thread_function()
     int lastId = -1;
     PathOrders actualOrders;
 
+    Map mapRobocup;
     Point *startPoint,*endPoint;
     std::vector<Point*> chemin;
 
@@ -119,7 +120,6 @@ void computeAStar_thread_function()
     {
         if(lastId != pathReq.id)
         {
-            Map mapRobocup;
             pathReq.processing = true;
             pathfinderState.state = pathfinderState.EN_COURS;
 
@@ -196,9 +196,6 @@ void computeAStar_thread_function()
                 endPoint);*/
 
             pathReq.processing = false;
-
-            ROS_DEBUG("Stop prematuraly");
-            stop = true;
         }
 
         boost::this_thread::sleep(sleep_time);

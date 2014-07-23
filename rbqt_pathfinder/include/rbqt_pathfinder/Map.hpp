@@ -38,6 +38,9 @@ public:
 	signed int computeAStar(std::vector<Point*> &chemin, Point *startPoint, Point *endPoint);
 	signed int getPointAt(signed int ligne, signed int colonne, Point*& point) const;
 	signed int getNearestPoint(float x, float y, Point*& point) const;
+	void reset();
+	bool getClean();
+	void setClean(bool c);
 
 #ifdef GRAPHIC
 	int drawObjects(sf::RenderWindow &w);
@@ -62,6 +65,7 @@ private:
 	bool _crossCorner;
 	signed int _poidsHeuristic;
 	typeHeuristic _heuristicFonction;
+	bool _clean;
 };
 
 class CompareF

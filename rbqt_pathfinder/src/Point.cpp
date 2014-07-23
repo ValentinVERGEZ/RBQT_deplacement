@@ -150,6 +150,14 @@
 		return dist;
 	}
 
+	void Point::reset()
+	{
+		setH(0);
+		setG(0);
+		setF(0);
+		setPointPrec(NULL);
+	}
+
 
 #ifdef GRAPHIC
 	int Point::constructShape()

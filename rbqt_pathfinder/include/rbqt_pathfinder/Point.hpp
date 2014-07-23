@@ -37,6 +37,7 @@ public:
 	void setColonne(signed int colonne);
 	bool isFree();
 	float distWith(Point const& pointDistant) const;
+	void reset();
 
 #ifdef GRAPHIC
 	int constructShape();

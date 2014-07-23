@@ -1,6 +1,7 @@
 #include "rbqt_pathfinder/Map.hpp"
 
 	Map::Map()
+	: _clean(true)
 	{		
 		ROS_INFO("Objet Map, instanciation");	
 
@@ -309,6 +310,7 @@
 		#endif
 
 		chemin.clear();
+		reset();
 		std::multiset<Point*,CompareF> aEvaluer;
 		std::multiset<Point*> dejaEvalue;
 		std::vector<Point*> voisins;
@@ -410,6 +412,7 @@
 			}
 		}
 
+		setClean(false);
 		return 0;		
 	}
 
@@ -461,6 +464,33 @@
 		}
 
 		return 0;
+	}
+
+
+	void Map::reset()
+	{
+		if(!getClean())
+		{
+			for (int i = 0; i < nbPointsLignes; ++i)
+			{
+				for (int j = 0; j < nbPointsColonnes; ++j)
+				{
+					_pointsPassage[i][j]->reset();
+				}
+			}		
+
+			setClean(true);	
+		}
+	}
+
+	bool Map::getClean()
+	{
+		return _clean;
+	}
+
+	void Map::setClean(bool c)
+	{
+		_clean = c;
 	}
 
 
