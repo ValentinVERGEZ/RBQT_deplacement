@@ -25,6 +25,7 @@
 	Request servReq;
 	unsigned int actualProcessedPose = 0;
 	bool firstRotationAlreadyDone = false;
+	bool goalAlreadySent = false;
 
 /*============================
 =            Main            =
@@ -224,11 +225,13 @@ void doneCb(const actionlib::SimpleClientGoalState& state,
 			actualProcessedPose = 0;
 			servReq.type == Request::NOTHING;
 			firstRotationAlreadyDone = false;
+			goalAlreadySent = false;
 		}
 		else
 		{
 			actualProcessedPose++;
 			firstRotationAlreadyDone = false;
+			goalAlreadySent = false;
 		}
 	}
 }
@@ -237,6 +240,7 @@ void doneCb(const actionlib::SimpleClientGoalState& state,
 void activeCb()
 {
   ROS_INFO("Goal just went active");
+  goalAlreadySent = true;
 }
 
 // Called every time feedback is received for the goal
@@ -251,7 +255,8 @@ void executePath_thread()
 // Environement
     boost::posix_time::milliseconds     sleep_time(10);
 
-    actionlib::SimpleActionClient<robotino_local_move::LocalMoveAction> localMoveClient("local_move", false);
+	// Client - actionlib	
+    actionlib::SimpleActionClient<robotino_local_move::LocalMoveAction> localMoveClient("local_move", true);
 
     robotino_local_move::LocalMoveGoal actualGoal;
 
@@ -260,18 +265,20 @@ void executePath_thread()
 	while(1)
 	{		
 
-
-		// if(!checkServer(localMoveClient))
-		// {
-		// 	EdCState_msg.state = executePath::EdCState::PROBLEM;
-  //       	boost::this_thread::sleep(sleep_time);
-		// 	continue;
-		// }
-
 		switch(servReq.type)
 		{
 			case Request::EXECUTE_PATH:
+
+			if(!checkServer(localMoveClient))
+			{
+				EdCState_msg.state = executePath::EdCState::PROBLEM;
+	        	boost::this_thread::sleep(sleep_time);
+				continue;
+			}
 			
+			if(goalAlreadySent)
+				continue;
+
 			// Construct goal
 				// Dernier point - Rotation + Avance avec Rotation (fixee)
 				if(actualProcessedPose == pathToFollow.path.poses.size())
@@ -319,7 +326,6 @@ void executePath_thread()
 						actualGoal.ignore_rotation = false;
 					}
 				}
-
 				localMoveClient.sendGoal(actualGoal, &doneCb, &activeCb, &feedbackCb);
 				break;
 
@@ -330,6 +336,7 @@ void executePath_thread()
 				break;
 				
 			case Request::CANCEL:
+			goalAlreadySent = false;
 				break;
 
 			case Request::NOTHING:
