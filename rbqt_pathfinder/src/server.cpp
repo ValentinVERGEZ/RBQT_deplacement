@@ -103,7 +103,7 @@ bool generatePath_callback( rbqt_pathfinder::GeneratePath::Request  &req,
 void odomCallback(nav_msgs::Odometry odom)
 {
     current_x       = (odom).pose.pose.position.x;
-    current_y       = (odom).pose.pose.position.x;
+    current_y       = (odom).pose.pose.position.y;
 }
 
 void computeAStar_thread_function()
