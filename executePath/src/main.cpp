@@ -370,20 +370,20 @@ float calculateRotationNeeded(float startX, float startY, float endX, float endY
 	float dy = (endY - startY);
 	float dx = (endX - startX);
 
-	float phi = atan(abs(dy/dx));
+	float phi = atan2(dy,dx);
 
-	if(dx >= 0)
-	{
-		if(dy < 0)
-			phi *= -1;
-	}
-	else
-	{
-		if(dy < 0)
-			phi = -M_PI + phi;
-		else
-			phi = M_PI - phi;
-	}
+	// if(dx >= 0)
+	// {
+	// 	if(dy < 0)
+	// 		phi *= -1;
+	// }
+	// else
+	// {
+	// 	if(dy < 0)
+	// 		phi = -M_PI + phi;
+	// 	else
+	// 		phi = M_PI - phi;
+	// }
 	return phi;
 }
 
