@@ -355,9 +355,12 @@
 				ROS_INFO("Arrive au point terminal !");
 
 				Point* prec;
-
+                int count = 0;
 				do
 				{
+					count++;
+		            ROS_INFO("Count = %d", count);
+
 					#ifdef GRAPHIC
 					p->_shape->setFillColor(sf::Color::Green);
 					#endif
@@ -365,7 +368,9 @@
 					chemin.push_back(p);
 					p->getPointPrec(prec);
 					p = prec;
+
 				} while(prec != NULL);
+
 
 				std::reverse(chemin.begin(),chemin.end());
 
