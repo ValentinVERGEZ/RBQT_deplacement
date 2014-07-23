@@ -376,6 +376,7 @@
 
 				std::reverse(chemin.begin(),chemin.end());
 
+                setClean(false);
 				return 0;
 			}
 
