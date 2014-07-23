@@ -397,6 +397,10 @@ void executePath_thread()
 						  current_phi,
 						  actualGoal.rotation + current_phi);
 
+				fmod(actualGoal.rotation,2*M_PI);
+				if(actualGoal.rotation > M_PI)
+					actualGoal.rotation -= 2*M_PI;
+
 				localMoveClient.sendGoal(actualGoal, &doneCb, &activeCb, &feedbackCb);
 				goalAlreadySent = true;
 				break;
