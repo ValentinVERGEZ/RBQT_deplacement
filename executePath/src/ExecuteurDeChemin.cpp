@@ -28,12 +28,12 @@ bool checkServer(actionlib::SimpleActionClient<robotino_local_move::LocalMoveAct
 		// ros::spinOnce();
 		if( client.waitForServer( ros::Duration( 1.0 ) ) )
 		{
-			ROS_INFO( "Connected to the local move server" );
+			// ROS_INFO( "Connected to the local move server" );
 			return true;
 		}
 		else
 		{
-			ROS_INFO( "Waiting for local move server" );
+			// ROS_INFO( "Waiting for local move server" );
 		}
 	}
 
