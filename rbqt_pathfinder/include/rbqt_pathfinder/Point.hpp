@@ -12,11 +12,13 @@ public:
 	Point(float x, float y, typePoint type = LIBRE);
 	Point(float x, float y, signed int ligne, signed int colonne, typePoint type = LIBRE);
 	~Point();
+
 	int setPosition(float x, float y);
 	int setType(typePoint type);
 	float getX() const;
 	float getY() const;
 	typePoint getType() const;
+	
 	// AStar
 	int setPointPrec(Point *pointPrecedent);
 	int getPointPrec(Point *&pointPrecedent);
@@ -46,12 +48,13 @@ private:
 
 	// AStar
 	Point *_pointPrecedent;
-	float _h;
-	float _g;
-	float _f;
+	float _h;	// Distance estimee jusqu'a arrivee (heuristic)
+	float _g;	// Distance connue depuis depart
+	float _f;	// Distance du chemin via ce point -> connue depuis depart + estimee jusqu'a arrivee (g+h)
 	
 };
-// Surcharge d'opérateurs
+
+// Surcharge d'opérateurs de comparaison
 	bool operator<(Point const& p1, Point const& p2);
 	bool operator==(Point const& p1, Point const& p2);
 

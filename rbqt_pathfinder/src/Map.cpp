@@ -89,6 +89,7 @@
 
 	Map::~Map()
 	{	
+		// Desallocations des objets et points
 		for (int i = 0; i < nbPointsLignes; ++i)
 		{
 			for (int j = 0; j < nbPointsColonnes; ++j)
@@ -126,6 +127,7 @@
 		_poidsHeuristic = poids;
 	}
 
+	// Utilise la fonction heuristic appropriee, selon notre choix de depart
 	float Map::heuristic(Point const& pointDepart, Point const& pointDistant)
 	{
 		switch(_heuristicFonction)
@@ -144,6 +146,7 @@
 		}
 	}
 
+	// Heuristic du taxi -> voir wikipedia, pertinent quand on ne se deplace pas ou peu en diagonale
 	float Map::heuristicManhattan(Point const& pointDepart, Point const& pointDistant)
 	{
 		float dist  = 0;
@@ -157,6 +160,7 @@
 		return dist;
 	}
 
+	// Heuristic "vol d'oiseau"
 	float Map::heuristicEuclidean(Point const& pointDepart, Point const& pointDistant)
 	{
 		float dist  = 0;
@@ -208,6 +212,10 @@
  *  +---+---+---+    +---+---+---+
  *
  */
+ /**
+  * Retourne tous les voisins d'un point en prenant en compte les paramètres : 
+  * _allowDiagonal et _crossCorner
+  */
 	signed int Map::getVoisins(std::vector<Point*> &voisins, Point *oirigin)
 	{
 		voisins.clear();
@@ -249,6 +257,8 @@
 	    if (!_allowDiagonal)
 	        return 0;
 
+	    // Les simple s0 à s3 remplient precedemment permettent 
+	    // de trouver les diagonals d0 à d3 franchissable ou non
 	    if (!_crossCorner)
 	    {
 	        d0 = s3 && s0;
@@ -287,6 +297,7 @@
 	    return 0;
 	}
 
+	// Algo AStar a proprement parler
 	signed int Map::computeAStar(std::vector<Point*> &chemin,
 								 Point *startPoint,
 								 Point *endPoint)
@@ -297,20 +308,21 @@
 		<< endPoint->getLigne() << ','
 		<< endPoint->getColonne() << ")" << std::endl;
 
+		// Il faut remettre a zero tout AStar
 		chemin.clear();
 		reset();
-		std::multiset<Point*,CompareF> aEvaluer;
+		std::multiset<Point*,CompareF> aEvaluer;	// Tableau associatifs de points tries selon F
 		std::multiset<Point*> dejaEvalue;
 		std::vector<Point*> voisins;
 		unsigned int i;
 
-		aEvaluer.insert(startPoint);
+		aEvaluer.insert(startPoint);				// On commence l'evaluation par le point de depart
 
-		while(!aEvaluer.empty())
+		while(!aEvaluer.empty())					// Tant qu'il reste des points a evaluer, on persevere
 		{
 			Point *p;
 
-			p = *(aEvaluer.begin());
+			p = *(aEvaluer.begin());				// On commence par evaluer le point avec le plus petit F (au tout debut il n'y a que start)
 
 			//ROS_INFO("\nA Evaluer Contains :");
 			//Affichage du tableau de points à évaluer
@@ -336,10 +348,12 @@
 				<< " h :" << p->getH()
 				<< std::endl;*/
 
+			// Si le point a evaluer est le point d'arrive, on a trouve notre chemin
 			if(p == endPoint)
 			{
 				ROS_INFO("Arrive au point terminal !");
 
+				// Il faut reconstruire le chemin en remontant de parents en parents
 				Point* prec;
                 int count = 0;
 				do
@@ -353,17 +367,21 @@
 
 				} while(prec != NULL);
 
-
+				// Le chemin est constuit a l'envers, il faut le retourner
 				std::reverse(chemin.begin(),chemin.end());
 
                 setClean(false);
 				return 0;
 			}
 
+			// Le point que l'on evalue passe dans la liste deja evaluees
 			dejaEvalue.insert(p);
 			aEvaluer.erase(p);
 			getVoisins(voisins,p);
 
+			// On va ajouter tous les voisins a la liste aEvaluer, en construisant leurs infos F, G et H
+			// Ils seront automatiquement tries par F croissant, ainsi au prochain tours on evaluera celui le plus proche de l'arrivee
+			// (celui avec le F le plus petit)
 			//ROS_INFO("Non evalue, evaluation des voisins");
 			for (i = 0; i < voisins.size(); i++)
 			{
