@@ -19,8 +19,10 @@ int main(int argc, char **argv)
     pathfinderState.state = pathfinderState.LIBRE;
     pathfinderState.id    = lastIdReceived;
     pathFound.id          = lastIdReceived;
+    pathFound.path.header.frame_id = "map";
 
     ros::Publisher path_pub    = n.advertise<rbqt_pathfinder::AstarPath>("pathFound", 1000);
+    ros::Publisher path_simple_pub    = n.advertise<nav_msgs::Path>("path", 1000);
     ros::Publisher state_pub   = n.advertise<rbqt_pathfinder::AstarState>("pathfinderState", 1000);
     
     ros::Subscriber sub_odo    = n.subscribe("/odom", 1000, odomCallback);
@@ -34,7 +36,9 @@ int main(int argc, char **argv)
     ros::Rate loop_rate(10);
     while (ros::ok() && !stop)
     {
+        pathFound.path.header.stamp = ros::Time::now();
         path_pub.publish(pathFound);
+        path_simple_pub.publish(pathFound.path);    // Message standardsé lisible avec RVIZ
         state_pub.publish(pathfinderState);
 
         ros::spinOnce();
@@ -178,6 +182,11 @@ void computeAStar_thread_function()
                 pointFinal.pose.position.y = chemin[i]->getY();
                 pointFinal.pose.orientation =
                     tf::createQuaternionMsgFromYaw(actualOrders.goalPose.yaw);
+                // Les quatre lignes qui suivent viennent masquer un bug -> la fonction précédente retourne des NaN
+                pointFinal.pose.orientation.x = 0;
+                pointFinal.pose.orientation.y = 0;
+                pointFinal.pose.orientation.z = 0;
+                pointFinal.pose.orientation.w = 0;
                 pathFound.path.poses.push_back(pointFinal);
 
                 pathfinderState.state = pathfinderState.SUCCES;

@@ -6,10 +6,6 @@
 		setPosition(x,y);
 		setType(type);
 
-	#ifdef GRAPHIC
-		constructShape();
-	#endif
-
 		setH(0);
 		setG(0);
 		setF(0);
@@ -23,9 +19,6 @@
 		setPosition(x,y);
 		setType(type);
 
-	#ifdef GRAPHIC
-		constructShape();
-	#endif
 
 		setH(0);
 		setG(0);
@@ -157,87 +150,6 @@
 		setF(0);
 		setPointPrec(NULL);
 	}
-
-
-#ifdef GRAPHIC
-	int Point::constructShape()
-	{
-		switch(_type)
-		{
-			case LIBRE:
-				_shape = new sf::CircleShape(4);
-		        _shape->setFillColor(sf::Color::Blue);
-		        _shape->setPosition((int)(562.5-_x)-2, 38+_y-2);
-			break;
-
-			case OCCUPE_AMI:
-				_shape = new sf::CircleShape(4);
-		        _shape->setFillColor(sf::Color::Green);
-		        _shape->setPosition((int)(562.5-_x)-2, 38+_y-2);
-			break;
-
-			case OCCUPE_ADVERSAIRE:
-				_shape = new sf::CircleShape(4);
-		        _shape->setFillColor(sf::Color::Red);
-		        _shape->setPosition((int)(562.5-_x)-2, 38+_y-2);
-			break;
-
-			case INTERDIT:
-				_shape = new sf::CircleShape(4,4);
-		        _shape->setFillColor(sf::Color::Black);
-		        _shape->setPosition((int)(562.5-_x)-2, 38+_y-2);
-			break;
-
-			default:
-				_shape = new sf::CircleShape(0);
-			break;
-		}
-
-
-		return 0;
-	}
-
-
-	int Point::reConstructShape()
-	{
-		switch(_type)
-		{
-			case LIBRE:
-		        _shape->setFillColor(sf::Color::Blue);
-		        _shape->setPosition((int)(562.5-_x)-2, 38+_y-2);
-			break;
-
-			case OCCUPE_AMI:
-		        _shape->setFillColor(sf::Color::Green);
-		        _shape->setPosition((int)(562.5-_x)-2, 38+_y-2);
-			break;
-
-			case OCCUPE_ADVERSAIRE:
-		        _shape->setFillColor(sf::Color::Red);
-		        _shape->setPosition((int)(562.5-_x)-2, 38+_y-2);
-			break;
-
-			case INTERDIT:
-		        _shape->setFillColor(sf::Color::Black);
-		        _shape->setPosition((int)(562.5-_x)-2, 38+_y-2);
-			break;
-
-			default:
-				_shape = new sf::CircleShape(0);
-			break;
-		}
-
-
-		return 0;
-	}
-
-	int Point::draw(sf::RenderWindow &w)
-	{
-		w.draw(*_shape);
-		return 0;
-	}
-
-#endif
 
 
 	bool operator<(Point const& p1, Point const& p2)

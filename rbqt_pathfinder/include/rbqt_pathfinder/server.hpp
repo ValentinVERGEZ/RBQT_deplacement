@@ -5,12 +5,6 @@
 //StdLib
     #include <iostream>
 
-    // #define GRAPHIC
-    #ifdef GRAPHIC
-    //SFML
-    #include <SFML/Graphics.hpp>
-    #endif // GRAPHIC
-
     // Perso
     #include "rbqt_pathfinder/Map.hpp"
     #include "rbqt_pathfinder/Objet.hpp"

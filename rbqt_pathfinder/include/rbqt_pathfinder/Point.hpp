@@ -4,11 +4,6 @@
 #include <cmath>
 #include <cstddef>
 
-#ifdef GRAPHIC
-    //SFML
-    #include <SFML/Graphics.hpp>
-#endif
-
 enum typePoint{LIBRE=1,OCCUPE_AMI,OCCUPE_ADVERSAIRE,INTERDIT};
 
 class Point
@@ -39,12 +34,6 @@ public:
 	float distWith(Point const& pointDistant) const;
 	void reset();
 
-#ifdef GRAPHIC
-	int constructShape();
-	int reConstructShape();
-	int draw(sf::RenderWindow &w);
-#endif
-
 private:
 	// Position du point
 	float _x;
@@ -60,12 +49,7 @@ private:
 	float _h;
 	float _g;
 	float _f;
-
-	// Graphique
-	#ifdef GRAPHIC
-public:
-		sf::CircleShape *_shape;
-	#endif
+	
 };
 // Surcharge d'opérateurs
 	bool operator<(Point const& p1, Point const& p2);

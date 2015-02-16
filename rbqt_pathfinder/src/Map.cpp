@@ -297,18 +297,6 @@
 		<< endPoint->getLigne() << ','
 		<< endPoint->getColonne() << ")" << std::endl;
 
-
-//Création des points
-		#ifdef GRAPHIC
-		for (int i = 0; i < nbPointsLignes; ++i)
-		{
-			for (int j = 0; j < nbPointsColonnes; ++j)
-			{
-				_pointsPassage[i][j]->reConstructShape();
-			}
-		}				
-		#endif
-
 		chemin.clear();
 		reset();
 		std::multiset<Point*,CompareF> aEvaluer;
@@ -323,10 +311,6 @@
 			Point *p;
 
 			p = *(aEvaluer.begin());
-
-			#ifdef GRAPHIC
-			p->_shape->setFillColor(sf::Color::Blue);
-			#endif
 
 			//ROS_INFO("\nA Evaluer Contains :");
 			//Affichage du tableau de points à évaluer
@@ -362,10 +346,6 @@
 				{
 					count++;
 		            ROS_INFO("Count = %d", count);
-
-					#ifdef GRAPHIC
-					p->_shape->setFillColor(sf::Color::Green);
-					#endif
 
 					chemin.push_back(p);
 					p->getPointPrec(prec);
@@ -493,35 +473,3 @@
 	{
 		_clean = c;
 	}
-
-
-
-#ifdef GRAPHIC
-	int Map::drawObjects(sf::RenderWindow &w)
-	{		
-		for(int i=0; i < nbProductionMachine; i++)
-		{
-        	w.draw(*(_production_machine[i]->_shape));
-		}
-
-		for(int i=0; i < nbDeliveryMachine; i++)
-		{
-        	w.draw(*(_delivery_machine[i]->_shape));
-		}
-
-		for(int i=0; i < nbRecyclingMachine; i++)
-		{
-        	w.draw(*(_recycling_machine[i]->_shape));
-		}
-
-		for(int i=0; i < nbPointsLignes; i++)
-		{
-			for (int j = 0; j < nbPointsColonnes; ++j)
-			{
-	        	w.draw(*(_pointsPassage[i][j]->_shape));
-			}
-		}
-
-		return 0;
-	}
-#endif

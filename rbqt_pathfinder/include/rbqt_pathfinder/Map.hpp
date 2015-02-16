@@ -11,11 +11,6 @@
 #include <algorithm>
 #include <cfloat>
 
-#ifdef GRAPHIC
-    //SFML
-    #include <SFML/Graphics.hpp>
-#endif
-
 enum typeHeuristic{MANHATTAN,EUCLIDEAN,Chebyshev};
 
 class Map
@@ -41,10 +36,6 @@ public:
 	void reset();
 	bool getClean();
 	void setClean(bool c);
-
-#ifdef GRAPHIC
-	int drawObjects(sf::RenderWindow &w);
-#endif
 
 private:
 	// Machines

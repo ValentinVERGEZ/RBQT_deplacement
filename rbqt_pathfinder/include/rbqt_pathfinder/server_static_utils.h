@@ -3,10 +3,6 @@
 
 #include <iostream>
 
-#ifdef GRAPHIC
-#include <SFML/Graphics.hpp>
-#endif // GRAPHIC
-
 #include "ros/ros.h"
 #include "tf/transform_datatypes.h"
 #include "nav_msgs/Path.h"
