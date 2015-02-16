@@ -1,3 +1,5 @@
+TODO : mettre à jour ce README pour catkin
+
 Pour générer un service et un message:
 
 dans CMakeLists.txt, décommenter 	# rosbuild_gensrv()

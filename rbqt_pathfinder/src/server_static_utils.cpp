@@ -35,7 +35,7 @@ void affichageTabPath(std::vector<rbqt_pathfinder::AstarPath> &AstarTab)
    for (int i = 0; i < AstarTab.size(); i++)
     { 
         ROS_INFO("---------------\n\nPATH %d",i);        
-        ROS_INFO("Size %d",AstarTab[i].path.poses.size());
+        ROS_INFO("Size %ld",AstarTab[i].path.poses.size());
         affichePath(AstarTab[i]);
     }
 }
